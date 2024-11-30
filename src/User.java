@@ -1,5 +1,6 @@
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -22,13 +23,13 @@ public class User implements UserInterface, Serializable {
     private String username;
     private String password;
     private String profilePicture;
-    private ArrayList<User> friends;
-    private ArrayList<User> blockedUsers;
+    private String friends;
+    private String blockedUsers;
     private ArrayList<Message> messageHistory;
 
     // Constructor
-    public User(String username, String password, String profilePicture, ArrayList<User> friends,
-                ArrayList<User> blockedUsers, ArrayList<Message> messageHistory) {
+    public User(String username, String password, String profilePicture, String friends,
+                String blockedUsers, ArrayList<Message> messageHistory) {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
@@ -38,7 +39,7 @@ public class User implements UserInterface, Serializable {
         //users.add(this);
     }
 
-    public User(String username, String password, String profilePicture) {
+    /*public User(String username, String password, String profilePicture) {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
@@ -46,7 +47,7 @@ public class User implements UserInterface, Serializable {
         this.blockedUsers = new ArrayList<>();
         this.messageHistory = new ArrayList<>();
         //users.add(this);
-    }
+    }*/
 
     // Profile Management
     public void updateProfile(String newUsername, String newPassword, String newProfilePicture) {
@@ -91,24 +92,12 @@ public class User implements UserInterface, Serializable {
 //        this.profilePicture = profilePicturePath;
 //    }
 
-    public ArrayList<User> getFriends() {
-
-        if (friends == null) {
-            friends = new ArrayList<User>();
-        }
-        else {
-            return friends;
-        }
-
-
-        return null;
+    public String getFriends() {
+        return friends;
     }
 
-    public String getFriendsString() {
-        return Arrays.toString(friends.toArray());
-    }
 
-    public ArrayList<User> getBlockedUsers() {
+    public String getBlockedUsers() {
         return blockedUsers;
     }
 
@@ -118,37 +107,81 @@ public class User implements UserInterface, Serializable {
 
     // Friend Methods
     public void addFriend(User user) {
+        // Read current friends if any
+        String[] tempFriends = new String[0];
+        if (!friends.equals("NA")) {
+            tempFriends = friends.split(";");
+        }
+
+        String[] tempBlockedUsers = new String[0];
+        if (!blockedUsers.equals("NA")) {
+            tempBlockedUsers = blockedUsers.split(";");
+        }
+
+
         // Check if user is blocked before adding as friend
-        if (blockedUsers.contains(user)) {
+        if (Arrays.asList(tempBlockedUsers).contains(user.getUsername())) {
             System.out.println("This user has been blocked.");
             return;
         }
 
-        if (!friends.contains(user)) {
-            friends.add(user);
-            //user.addFriend(this);
-            //user.getFriends().add(this); // Add this user to friend's list
+        if (friends.equals("NA")) {
+            friends = user.getUsername();
+        } else {
+            if (Arrays.asList(tempFriends).contains(user.getUsername())) {
+                System.out.println("This user already has " + user.getUsername() + " added as a friend.");
+            } else {
+                friends += ";" + user.getUsername();
+            }
         }
+        System.out.println(friends);
     }
 
     public void removeFriend(User user) {
+        // Read current users
+        String[] temp;
+        ArrayList<String> tempFriends = new ArrayList<>();
+        if (!friends.equals("NA")) {
+            temp = friends.split(";");
+            tempFriends = new ArrayList<>(Arrays.asList(temp));
+        }
+
+
         // Check if user is present in friend's list before removing as friend
-        if (friends.contains(user)) {
-            friends.remove(user);
-            user.getFriends().remove(this); // Remove this user from the friend's list
+        if (tempFriends.contains(user.getUsername())) {
+            tempFriends.remove(user.getUsername());
+            friends = String.join(";", tempFriends);
+            //user.getFriends().remove(this); // Remove this user from the friend's list
         } else {
             System.out.println("This user is not in your friend list.");
         }
     }
 
     public void blockUser(User user) {
+        String[] tempF;
+        ArrayList<String> tempFriends = new ArrayList<>();
+        if (!friends.equals("NA")) {
+            tempF = friends.split(";");
+            tempFriends = new ArrayList<>(Arrays.asList(tempF));
+        }
+
+        String[] tempB;
+        ArrayList<String> tempBlocked = new ArrayList<>();
+        if (!blockedUsers.equals("NA")) {
+            tempB = blockedUsers.split(";");
+            tempBlocked = new ArrayList<>(Arrays.asList(tempB));
+        }
+
+
         // Check if user is not present in block list before blocking
-        if (!blockedUsers.contains(user)) {
-            blockedUsers.add(user);
+        if (!tempBlocked.contains(user.getUsername())) {
+            tempBlocked.add(user.getUsername());
+            blockedUsers = String.join(";", tempBlocked);
             System.out.println("This user has been blocked.");
 
-            if(friends.contains(user)) {
-                friends.remove(user); // Remove from friends if they're in the friend list
+            if (tempFriends.contains(user.getUsername())) {
+                tempFriends.remove(user.getUsername()); // Remove from friends if they're in the friend list
+                friends = String.join(";", tempFriends);
                 System.out.println("Friend has been blocked.");
             }
         } else {
@@ -158,7 +191,7 @@ public class User implements UserInterface, Serializable {
 
     public void unblockUser(User user) {
 
-        blockedUsers.remove(user);
+//        blockedUsers.remove(user);
     }
 
     // Profile Picture Methods
@@ -178,26 +211,36 @@ public class User implements UserInterface, Serializable {
 //    }
 //  }
 
-    public String getFriendUsernames() {
-        String result = "";
-        // goes through arraylist of friend objects and concatonates a string with the usernames of the friends
-        for (User friend : friends) {
-            result += friend.getUsername() + ";";
-        }
-        return result;
-    }
-
-    public String getBlockedUsernames() {
-        // get blocked usernames
-        String result = "";
-        for (User friend : blockedUsers) {
-            result += friend.getUsername() + " ";
-        }
-        return result;
-    }
+//    public String getFriendUsernames() {
+//        String result = "";
+//        // goes through arraylist of friend objects and concatonates a string with the usernames of the friends
+////        for (User friend : friends) {
+////            result += friend.getUsername() + ";";
+////        }
+//        return result;
+//    }
+//
+//    public String getBlockedUsernames() {
+//        // get blocked usernames
+//        String result = "";
+//       // for (User friend : blockedUsers) {
+//           // result += friend.getUsername() + " ";
+//       // }
+//        return result;
+//    }
 
     public void sendMessageAll(String content) {
-        for (User friend : friends) {
+        Database tempDatabase = new Database();
+        ArrayList<User> friendUsernamesArrayList = new ArrayList<>();
+        String[] friendUsernames = new String[0];
+        if (!friends.equals("NA")) {
+            friendUsernames = friends.split(";");
+            for (String username : friendUsernames) {
+                friendUsernamesArrayList.add(tempDatabase.findUser(username));
+            }
+        }
+
+        for (User friend : friendUsernamesArrayList) {
             sendMessage(friend, content);
         }
     }
@@ -216,7 +259,7 @@ public class User implements UserInterface, Serializable {
 ////    }
 
     public String toString(){
-        return getUsername() + "," + getPassword() + "," + getProfilePicture() + "," + getFriendUsernames() + "," + getBlockedUsernames() +
+        return getUsername() + "," + getPassword() + "," + getProfilePicture() + "," + friends + "," + blockedUsers +
                 "," + messageHistory;
     }
 }

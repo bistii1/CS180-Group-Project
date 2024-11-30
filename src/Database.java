@@ -15,7 +15,7 @@ import java.util.*;
 
 public class Database extends ArrayList<String> implements DatabaseInterface, Serializable {
 
-    public ArrayList<User> users; // arraylist of all users created ever
+    public static ArrayList<User> users; // arraylist of all users created ever
     private static final long serialVersionUID = 1L; // for serializable
     private final String FILENAME = "database.txt";
     private final String INFORMATION_FILE = "databaseInformation.txt";
@@ -100,19 +100,29 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
 
     // saves database object to a file
     public void saveDatabase(String filename) {
-        try {
-            FileOutputStream file = new FileOutputStream(filename);
-            ObjectOutputStream object = new ObjectOutputStream(file);
-            object.writeObject(this);
-            object.flush();
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(Database.users);
             System.out.println("Database saved");
-            object.close();
-            file.close();
-
         } catch (IOException e) {
             System.out.println("Error saving database");
             e.printStackTrace();
+        }
+    }
 
+    public void loadDatabase(String filename) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            // loads a database object from a file
+            // uses ObjectInputStream to load the serialized object from the file
+            Database.users = (ArrayList<User>) ois.readObject();
+
+
+        } catch (EOFException e) {
+            System.out.println("Database has no users");
+        } catch (FileNotFoundException e) {
+            System.out.println("Database file not found! Returning a new empty database.");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println("Error loading database");
+            e.printStackTrace();
         }
     }
 
@@ -131,35 +141,13 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
     }
 
 
-    public void loadDatabase(String filename) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            // loads a database object from a file
-            // uses ObjectInputStream to load the serialized object from the file
-            Database database = (Database) ois.readObject();
-            System.out.println("Database loaded!!");
 
-            if (database.users == null) {
-                database.users = new ArrayList<>();
-            }
-
-            System.out.println(database.users);
-
-            users = database.users;
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Database file not found! Returning a new empty database.");
-
-        } catch (ClassNotFoundException | IOException e) {
-            System.out.println("Error loading database");
-            e.printStackTrace();
-        }
-    }
 
     public ArrayList<User> getUsers() {
         return users;
     }
 
-    public void readUsers() {
+    /*public void readUsers() {
         // delete all users and read everything back in to the arraylist again
         //users = new ArrayList<User>();
         try (BufferedReader br = new BufferedReader(new FileReader("databaseInformation.txt"))) {
@@ -176,7 +164,7 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 
     public static void main(String[] args) {

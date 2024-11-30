@@ -27,14 +27,14 @@ public interface UserInterface {
     String getUsername();
     String getPassword();
     String getProfilePicture();
-    ArrayList<User> getFriends();
+    String getFriends();
 
     // It is static since it is not specific to an instance variable
     static ArrayList<User> getUsers() {
         return new ArrayList<>();   // returns an empty user ArrayList
     }
 
-    ArrayList<User> getBlockedUsers();
+    String getBlockedUsers();
     ArrayList<Message> getMessageHistory();
 
     // Setters

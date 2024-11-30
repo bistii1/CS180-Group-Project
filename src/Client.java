@@ -29,6 +29,7 @@ public class Client extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "Connection failed to server", "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
+        //Database.loadDatabase("database.txt");
 
         // Initialize GUI
         setTitle("User Management System");
@@ -185,7 +186,7 @@ public class Client extends JFrame implements ActionListener {
         String friend = JOptionPane.showInputDialog(this, "Enter friend's username to add:", "Add Friend", JOptionPane.QUESTION_MESSAGE);
         writer.println(thisUserName);
         writer.println(friend);
-        JOptionPane.showMessageDialog(this, "Added " + friend + " :3!!!!!<3333", "Friend Added", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Added " + friend + "!", "Friend Added", JOptionPane.INFORMATION_MESSAGE);
     }
     private void blockUser() {
         writer.println("Block user");

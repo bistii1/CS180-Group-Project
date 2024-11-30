@@ -3,14 +3,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.io.*;
-import java.lang.Math;
 
 
 public class Server implements Runnable {
-    private static String userDatabase = "databaseInformation.txt";
     private static Database database = new Database();
-    private static final String FILENAME = "database.txt";
-    private static final String INFORMATION_FILE = "databaseInformation.txt";
+    private static final String DATABASE_OBJECT = "database.txt";
+    private static final String DATABASE_TEXT = "databaseInformation.txt";
 
 
     Socket socket;
@@ -23,7 +21,7 @@ public class Server implements Runnable {
     private static ArrayList<String> searchDatabase(String search) {
         ArrayList<String> results = new ArrayList<>();
         System.out.println(search);
-        for (User user : database.users) {
+        for (User user : Database.users) {
             if (user.getUsername().toLowerCase().contains(search.toLowerCase())) {
                 System.out.println(user.getUsername());
                 results.add(user.getUsername());
@@ -34,7 +32,7 @@ public class Server implements Runnable {
 
     // Yatharth - adding protected login
     private static User login(String userName, String password) {
-        for (User user : database.users) {
+        for (User user : Database.users) {
             if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
                 return user;
             }
@@ -45,7 +43,9 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-            // receive input from client
+            // read users from database.txt
+            database.loadDatabase(DATABASE_OBJECT);
+            System.out.println("Current users " + Database.users);
             //System.out.println(Database.users);
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -76,13 +76,13 @@ public class Server implements Runnable {
                     String password = reader.readLine();
                     String profilePicture = reader.readLine();
                     User createUser = new User(username, password, profilePicture,
-                            new ArrayList<User>(), new ArrayList<User>(), new ArrayList<Message>());
+                            "NA", "NA", new ArrayList<>());
                     boolean successful = database.addUser(createUser);
                     if (successful) {
                         writer.write(createUser.getUsername());
                         writer.println();
                         writer.flush();
-                        System.out.println("Created new account" + database.users);
+                        System.out.println("Created new account" + Database.users);
                     } else {
                         writer.write("User already exists");
                         writer.println();
@@ -125,12 +125,12 @@ public class Server implements Runnable {
 
                     // actually adding friend
                     userAdding.addFriend(friend);
-                    System.out.println(userAdding.getFriendsString());
+                    Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
+                    System.out.println(userAdding.getFriends());
                     System.out.println(userAdding);
-                    database.saveDatabase(FILENAME);
-                    database.loadDatabase(FILENAME);
-                    database.saveInformation("databaseInformation.txt");
-                    System.out.println(database.users);
+                    database.saveDatabase(DATABASE_OBJECT);
+                    database.saveInformation(DATABASE_TEXT);
+                    System.out.println(Database.users);
 
                 } else if (option.equals("Block user")) {
 
@@ -138,10 +138,9 @@ public class Server implements Runnable {
                     User blocked = database.findUser(reader.readLine());
 
                     user.blockUser(blocked);
-                    database.saveDatabase(FILENAME);
-                    database.loadDatabase(FILENAME);
-                    database.saveInformation("databaseInformation.txt");
-                    System.out.println(database.users);
+                    database.saveDatabase(DATABASE_OBJECT);
+                    database.saveInformation(DATABASE_TEXT);
+                    System.out.println(Database.users);
 
                 }
                 else if (option.equals("Message")) {
@@ -170,7 +169,7 @@ public class Server implements Runnable {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(2424);
 
-        database.loadDatabase(FILENAME);
+        //database.loadDatabase(FILENAME);
 
 
         while (true) {
