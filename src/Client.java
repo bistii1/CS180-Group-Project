@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client extends JFrame implements ActionListener {
     private Socket socket;
@@ -235,7 +236,31 @@ public class Client extends JFrame implements ActionListener {
     private void viewMessages() {
         MessageFrame newFrame = new MessageFrame();
         newFrame.setVisible(true);
-        newFrame.setSize(400, 300);
+        newFrame.setSize(1000, 300);
+
+        writer.println("View Messages");
+
+        try (BufferedReader bw = new BufferedReader(new FileReader(thisUserName + ".txt"))) {
+            ArrayList<String> messages = new ArrayList<>();
+            String line;
+            while ((line = bw.readLine()) != null) {
+                messages.add(line);
+            }
+            writer.write(String.valueOf(messages));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            String messages = reader.readLine();
+//            JTextArea messageArea = new JTextArea(messages);
+//            newFrame.setContentPane(messageArea);
+//            messageArea.setEditable(false);
+//            JScrollPane scrollPane = new JScrollPane(messageArea);
+//            JOptionPane.showMessageDialog(this, scrollPane, "Your Messages", JOptionPane.INFORMATION_MESSAGE);
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(this, "Error during account view", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     public static void main(String[] args) {

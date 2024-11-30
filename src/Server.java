@@ -170,6 +170,19 @@ public class Server implements Runnable {
                     database.saveDatabase(DATABASE_OBJECT);
                     //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
+                } else if (option.equals("View Messages")) {
+                    String message = reader.readLine();
+                    //writer.write("Let's pretend you have these messages right now");
+//                    try (BufferedReader bw = new BufferedReader(new FileReader(message + ".txt"))) {
+//                        ArrayList<String> messages = new ArrayList<>();
+//                        String line;
+//                        while ((line = bw.readLine()) != null) {
+//                            messages.add(line);
+//                        }
+//                        writer.write(String.valueOf(messages));
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             }
             writer.close();
