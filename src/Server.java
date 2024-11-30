@@ -8,7 +8,6 @@ import java.io.*;
 public class Server implements Runnable {
     private static Database database = new Database();
     private static final String DATABASE_OBJECT = "database.txt";
-    private static final String DATABASE_TEXT = "databaseInformation.txt";
 
 
     Socket socket;

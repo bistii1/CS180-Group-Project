@@ -43,18 +43,21 @@ public class Client extends JFrame implements ActionListener {
         messageFriendButton = new JButton("Message Friend");
         blockButton = new JButton("Block User");
         removeFriendButton = new JButton("Remove Friend");
+        viewMessagesButton = new JButton("View Messages");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
         messageFriendButton.addActionListener(this);
         blockButton.addActionListener(this);
         removeFriendButton.addActionListener(this);
+        viewMessagesButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
         mainPanel.add(messageFriendButton);
         mainPanel.add(blockButton);
         mainPanel.add(removeFriendButton);
+        mainPanel.add(viewMessagesButton);
 
         loginOrCreateAccount();
     }
@@ -158,6 +161,8 @@ public class Client extends JFrame implements ActionListener {
             blockUser();
         } else if (e.getSource() == removeFriendButton) {
             removeFriend();
+        } else if (e.getSource() == viewMessagesButton) {
+            viewMessages();
         }
     }
 
@@ -225,6 +230,12 @@ public class Client extends JFrame implements ActionListener {
         writer.println(thisUserName);
         writer.println(friend);
         JOptionPane.showMessageDialog(this, "Removed " + friend + "!", "Friend Removed", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void viewMessages() {
+        MessageFrame newFrame = new MessageFrame();
+        newFrame.setVisible(true);
+        newFrame.setSize(400, 300);
     }
 
     public static void main(String[] args) {
