@@ -129,7 +129,7 @@ public class Server implements Runnable {
                     System.out.println(userAdding.getFriends());
                     System.out.println(userAdding);
                     database.saveDatabase(DATABASE_OBJECT);
-                    database.saveInformation(DATABASE_TEXT);
+                    //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
 
                 } else if (option.equals("Block user")) {
@@ -139,7 +139,7 @@ public class Server implements Runnable {
 
                     user.blockUser(blocked);
                     database.saveDatabase(DATABASE_OBJECT);
-                    database.saveInformation(DATABASE_TEXT);
+                    //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
 
                 }

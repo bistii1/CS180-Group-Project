@@ -88,7 +88,6 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
         if (findUser(user.getUsername()) == null) {
             users.add(user);
             saveDatabase(FILENAME);
-            saveInformation(INFORMATION_FILE);
             return true;
 
             // if user already exists:
@@ -103,6 +102,7 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(Database.users);
             System.out.println("Database saved");
+            saveInformation();
         } catch (IOException e) {
             System.out.println("Error saving database");
             e.printStackTrace();
@@ -127,13 +127,13 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
     }
 
     // saves information in a way that is a lot easier to read...
-    public void saveInformation(String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+    private void saveInformation() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("databaseInformation.txt"))) {
             for (User user : users) {
                 writer.write(user.toString());
                 writer.newLine();
             }
-            System.out.println("Readable summary saved to " + filename);
+            System.out.println("Readable summary saved to databaseInformation.txt");
         } catch (IOException e) {
             System.out.println("Error saving readable summary");
             e.printStackTrace();
@@ -175,7 +175,7 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
 
         database.saveDatabase("database.txt");
 
-        database.saveInformation("databaseInformation.txt");
+        database.saveInformation();
         database.loadDatabase("databaseInformation.txt");
 
         database.viewUsers();

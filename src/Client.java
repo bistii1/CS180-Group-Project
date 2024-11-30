@@ -113,7 +113,7 @@ public class Client extends JFrame implements ActionListener {
                 if ("User already exists".equals(thisUserName)) {
                     JOptionPane.showMessageDialog(this, "User already exists!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    saveToDatabase(username, password, profilePicture);
+                    //saveToDatabase(username, password, profilePicture);
                     JOptionPane.showMessageDialog(this, "Welcome, " + thisUserName, "Account Created", JOptionPane.INFORMATION_MESSAGE);
                     created = true;
                     displayMainMenu();
@@ -124,7 +124,7 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
-    private void saveToDatabase(String username, String password, String profilePicture) {
+    /*private void saveToDatabase(String username, String password, String profilePicture) {
         try (FileWriter fw = new FileWriter("databaseInformation.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
@@ -132,7 +132,7 @@ public class Client extends JFrame implements ActionListener {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error saving to database", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
+    }*/
 
     private void displayMainMenu() {
         Container content = this.getContentPane();
