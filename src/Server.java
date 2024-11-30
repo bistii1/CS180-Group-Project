@@ -154,6 +154,23 @@ public class Server implements Runnable {
                             user.sendMessage(receiver, reader.readLine());
                         }
                     }
+                } else if (option.equals("Remove friend")) {
+                    String userRemovingString = reader.readLine();
+                    System.out.println("The string username is " + userRemovingString);
+                    // finds user object who is ADDING (sending request) using string search
+                    User userAdding = database.findUser(userRemovingString);
+
+                    User friend = database.findUser(reader.readLine());
+                    System.out.println("The string of the friend is " + friend.getUsername());
+
+                    // actually adding friend
+                    userAdding.removeFriend(friend);
+                    Database.users.set(Database.users.indexOf(database.findUser(userRemovingString)), userAdding);
+                    System.out.println(userAdding.getFriends());
+                    System.out.println(userAdding);
+                    database.saveDatabase(DATABASE_OBJECT);
+                    //database.saveInformation(DATABASE_TEXT);
+                    System.out.println(Database.users);
                 }
             }
             writer.close();

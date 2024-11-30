@@ -150,7 +150,13 @@ public class User implements UserInterface, Serializable {
         // Check if user is present in friend's list before removing as friend
         if (tempFriends.contains(user.getUsername())) {
             tempFriends.remove(user.getUsername());
-            friends = String.join(";", tempFriends);
+            if (tempFriends.isEmpty()) {
+                friends = "NA";
+            } else if (tempFriends.size() == 1) {
+                friends = tempFriends.get(0);
+            } else {
+                friends = String.join(";", tempFriends);
+            }
             //user.getFriends().remove(this); // Remove this user from the friend's list
         } else {
             System.out.println("This user is not in your friend list.");
@@ -181,7 +187,13 @@ public class User implements UserInterface, Serializable {
 
             if (tempFriends.contains(user.getUsername())) {
                 tempFriends.remove(user.getUsername()); // Remove from friends if they're in the friend list
-                friends = String.join(";", tempFriends);
+                if (tempFriends.isEmpty()) {
+                    friends = "NA";
+                } else if (tempFriends.size() == 1) {
+                    friends = tempFriends.get(0);
+                } else {
+                    friends = String.join(";", tempFriends);
+                }
                 System.out.println("Friend has been blocked.");
             }
         } else {

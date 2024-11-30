@@ -14,7 +14,7 @@ public class Client extends JFrame implements ActionListener {
 
     // GUI Components
     private JPanel mainPanel;
-    private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton;
+    private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton, viewMessagesButton;
 
     public Client() {
         // Connect to server
@@ -42,16 +42,19 @@ public class Client extends JFrame implements ActionListener {
         addFriendButton = new JButton("Add Friend");
         messageFriendButton = new JButton("Message Friend");
         blockButton = new JButton("Block User");
+        removeFriendButton = new JButton("Remove Friend");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
         messageFriendButton.addActionListener(this);
         blockButton.addActionListener(this);
+        removeFriendButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
         mainPanel.add(messageFriendButton);
         mainPanel.add(blockButton);
+        mainPanel.add(removeFriendButton);
 
         loginOrCreateAccount();
     }
@@ -153,6 +156,8 @@ public class Client extends JFrame implements ActionListener {
             messageFriend();
         } else if (e.getSource() == blockButton) {
             blockUser();
+        } else if (e.getSource() == removeFriendButton) {
+            removeFriend();
         }
     }
 
@@ -211,6 +216,15 @@ public class Client extends JFrame implements ActionListener {
             writer.println(friend + "\n" + message);
         }
 
+    }
+
+
+    private void removeFriend() {
+        writer.println("Remove friend");
+        String friend = JOptionPane.showInputDialog(this, "Enter friend's username to remove:", "Remove Friend", JOptionPane.QUESTION_MESSAGE);
+        writer.println(thisUserName);
+        writer.println(friend);
+        JOptionPane.showMessageDialog(this, "Removed " + friend + "!", "Friend Removed", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {
