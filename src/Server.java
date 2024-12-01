@@ -204,11 +204,7 @@ public class Server implements Runnable {
                         writer.println();
                         writer.flush();
                         Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
-                        System.out.println(userAdding.getFriends());
-                        System.out.println(userAdding);
                         database.saveDatabase(DATABASE_OBJECT);
-                        //database.saveInformation(DATABASE_TEXT);
-                        System.out.println(Database.users);
                     } else {
                         writer.write("null");
                         writer.println();
@@ -220,10 +216,17 @@ public class Server implements Runnable {
 
                     User blocked = database.findUser(reader.readLine());
                     if (blocked != null) {
-                        user.blockUser(blocked);
+                        writer.write("");
+                        writer.println();
+                        writer.flush();
+                        writer.write(user.blockUser(blocked));
+                        writer.println();
+                        writer.flush();
                         database.saveDatabase(DATABASE_OBJECT);
-                        //database.saveInformation(DATABASE_TEXT);
-                        System.out.println(Database.users);
+                    } else {
+                        writer.write("null");
+                        writer.println();
+                        writer.flush();
                     }
 
 

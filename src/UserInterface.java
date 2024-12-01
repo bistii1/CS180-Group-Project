@@ -20,7 +20,7 @@ public interface UserInterface {
     void removeFriend(User user);
 
     // Blocked User Management
-    void blockUser(User user);
+    String blockUser(User user);
     void unblockUser(User user);
 
     // Getters

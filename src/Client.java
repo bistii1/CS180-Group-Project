@@ -242,10 +242,27 @@ public class Client extends JFrame implements ActionListener {
     }
     private void blockUser() {
         writer.println("Block user");
-        String blockedUser = JOptionPane.showInputDialog(this, "Enter username to block: ", "Add Friend", JOptionPane.QUESTION_MESSAGE);
+        String blockedUser = JOptionPane.showInputDialog(this, "Enter username to block: ", "Block User", JOptionPane.QUESTION_MESSAGE);
         writer.println(thisUserName);
         writer.println(blockedUser);
-        JOptionPane.showMessageDialog(this, "Blocked " + blockedUser + "!", "Friend Added", JOptionPane.INFORMATION_MESSAGE);
+
+        String condition;
+        try {
+            condition = reader.readLine();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        if (condition.equals("null")) {
+            JOptionPane.showMessageDialog(this, "No user found", "Block User", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            try {
+                condition = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, condition, "Block User", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
 

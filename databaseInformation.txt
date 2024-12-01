@@ -1,2 +1,2 @@
-yatharth,jain,j.jpg,NA,NA,[]
+yatharth,jain,j.jpg,NA,bisti,[]
 bisti,potdar,p.jpg,NA,NA,[]

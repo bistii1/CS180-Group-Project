@@ -162,7 +162,7 @@ public class User implements UserInterface, Serializable {
         }
     }
 
-    public void blockUser(User user) {
+    public String blockUser(User user) {
         String[] tempF;
         ArrayList<String> tempFriends = new ArrayList<>();
         if (!friends.equals("NA")) {
@@ -182,7 +182,6 @@ public class User implements UserInterface, Serializable {
         if (!tempBlocked.contains(user.getUsername())) {
             tempBlocked.add(user.getUsername());
             blockedUsers = String.join(";", tempBlocked);
-            System.out.println("This user has been blocked.");
 
             if (tempFriends.contains(user.getUsername())) {
                 tempFriends.remove(user.getUsername()); // Remove from friends if they're in the friend list
@@ -193,10 +192,11 @@ public class User implements UserInterface, Serializable {
                 } else {
                     friends = String.join(";", tempFriends);
                 }
-                System.out.println("Friend has been blocked.");
+                return "Friend has been blocked.";
             }
+            return "This user has been blocked.";
         } else {
-            System.out.println("This user has already been blocked.");
+            return "This user has already been blocked.";
         }
     }
 
