@@ -15,7 +15,7 @@ public class Client extends JFrame implements ActionListener {
     // GUI Components
     private JPanel mainPanel;
     private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton,
-            viewIncomingMessagesButton, viewSentMessagesButton;
+            viewIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton;
 
     public Client() {
         // Connect to server
@@ -46,6 +46,7 @@ public class Client extends JFrame implements ActionListener {
         removeFriendButton = new JButton("Remove Friend");
         viewIncomingMessagesButton = new JButton("View Incoming Messages");
         viewSentMessagesButton = new JButton("View Sent Messages");
+        deleteMessagesButton = new JButton("Delete Messages");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
@@ -54,6 +55,7 @@ public class Client extends JFrame implements ActionListener {
         removeFriendButton.addActionListener(this);
         viewIncomingMessagesButton.addActionListener(this);
         viewSentMessagesButton.addActionListener(this);
+        deleteMessagesButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
@@ -62,6 +64,7 @@ public class Client extends JFrame implements ActionListener {
         mainPanel.add(removeFriendButton);
         mainPanel.add(viewIncomingMessagesButton);
         mainPanel.add(viewSentMessagesButton);
+        mainPanel.add(deleteMessagesButton);
 
         loginOrCreateAccount();
     }
@@ -177,8 +180,15 @@ public class Client extends JFrame implements ActionListener {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        } else if (e.getSource() == deleteMessagesButton) {
+            try {
+                deleteMessages();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
+
 
     private void searchUsers() {
         try {
@@ -258,6 +268,16 @@ public class Client extends JFrame implements ActionListener {
 
     private void viewSentMessages() throws IOException {
         writer.println("View Sent Messages");
+        writer.println(thisUserName);
+        MessageFrame messageFrame = new MessageFrame("Messages " + thisUserName + " sent\n");
+        String message = "";
+        while (!((message = reader.readLine()).equals("END"))) {
+            messageFrame.addMessage(message);
+        }
+    }
+
+    private void deleteMessages() throws IOException {
+        writer.println("Delete Messages");
         writer.println(thisUserName);
         MessageFrame messageFrame = new MessageFrame("Messages " + thisUserName + " sent\n");
         String message = "";

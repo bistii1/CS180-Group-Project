@@ -64,6 +64,18 @@ public class Server implements Runnable {
             if (results.isEmpty()) {
                 results.add(user.getUsername() + " has no outgoing messages.");
             }
+        } else if (sentOrIncoming.equals("delete")) {
+            int i = 1;
+            for (Message message : messages) {
+                if (message.getSender().getUsername().equals(user.getUsername())) {
+                    String newMessage = i + ". " + message.getContent() + " to " + message.getRecipient().getUsername();
+                    results.add(newMessage);
+                    i++;
+                }
+            }
+            if (results.isEmpty()) {
+                results.add(user.getUsername() + " has no outgoing messages to delete.");
+            }
         }
         return results;
     }
@@ -216,6 +228,18 @@ public class Server implements Runnable {
                     User user = database.findUser(reader.readLine());
                     System.out.println(user);
                     ArrayList<String> messages = loadMessages(user, "outgoing");
+                    for (String message : messages) {
+                        writer.write(message);
+                        writer.println();
+                        writer.flush();
+                    }
+                    writer.write("END");
+                    writer.println();
+                    writer.flush();
+                } else if (option.equals("Delete Messages")) {
+                    User user = database.findUser(reader.readLine());
+                    System.out.println(user);
+                    ArrayList<String> messages = loadMessages(user, "delete");
                     for (String message : messages) {
                         writer.write(message);
                         writer.println();
