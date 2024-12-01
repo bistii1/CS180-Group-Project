@@ -260,11 +260,12 @@ public class User implements UserInterface, Serializable {
     public void sendMessage(User recipient, String content) {
         Message message = new Message(this, recipient, content);
         recipient.messageHistory.add(message);
-        System.out.println(recipient.messageHistory);
-        System.out.println(recipient);
-        for (User user : Database.users) {
-            System.out.println(user);
-        }
+        this.messageHistory.add(message);
+//        System.out.println(recipient.messageHistory);
+//        System.out.println(recipient);
+//        for (User user : Database.users) {
+//            System.out.println(user);
+//        }
     }
 
 //    public String getMessage() {

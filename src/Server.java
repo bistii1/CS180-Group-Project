@@ -39,6 +39,18 @@ public class Server implements Runnable {
         return null;
     }
 
+    private ArrayList<String> loadMessages(User user) {
+        ArrayList<Message> messages = user.getMessageHistory();
+        ArrayList<String> results = new ArrayList<>();
+        for (Message message : messages) {
+            if (!message.getSender().getUsername().equals(user.getUsername())) {
+                String newMessage = "From " + message.getSender().getUsername() + ": " + message.getContent();
+                results.add(newMessage);
+            }
+        }
+        return results;
+    }
+
     @Override
     public void run() {
         try {
@@ -172,18 +184,13 @@ public class Server implements Runnable {
                     //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
                 } else if (option.equals("View Messages")) {
-                    String message = reader.readLine();
-                    //writer.write("Let's pretend you have these messages right now");
-//                    try (BufferedReader bw = new BufferedReader(new FileReader(message + ".txt"))) {
-//                        ArrayList<String> messages = new ArrayList<>();
-//                        String line;
-//                        while ((line = bw.readLine()) != null) {
-//                            messages.add(line);
-//                        }
-//                        writer.write(String.valueOf(messages));
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
+                    User user = database.findUser(reader.readLine());
+//                    ArrayList<String> messages = loadMessages(user);
+//                    for (String message : messages) {
+//                        writer.write(message);
 //                    }
+//                    writer.write("END");
+                    writer.write(String.valueOf(loadMessages(user)));
                 }
             }
             writer.close();

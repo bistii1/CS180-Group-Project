@@ -163,7 +163,11 @@ public class Client extends JFrame implements ActionListener {
         } else if (e.getSource() == removeFriendButton) {
             removeFriend();
         } else if (e.getSource() == viewMessagesButton) {
-            viewMessages();
+            try {
+                viewMessages();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -233,34 +237,21 @@ public class Client extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(this, "Removed " + friend + "!", "Friend Removed", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void viewMessages() {
-        MessageFrame newFrame = new MessageFrame();
-        newFrame.setVisible(true);
-        newFrame.setSize(1000, 300);
-
+    private void viewMessages() throws IOException {
+        MessageFrame messageFrame = new MessageFrame();
         writer.println("View Messages");
+        writer.println(thisUserName);
 
-        try (BufferedReader bw = new BufferedReader(new FileReader(thisUserName + ".txt"))) {
-            ArrayList<String> messages = new ArrayList<>();
-            String line;
-            while ((line = bw.readLine()) != null) {
-                messages.add(line);
-            }
-            writer.write(String.valueOf(messages));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//        try {
-//            String messages = reader.readLine();
-//            JTextArea messageArea = new JTextArea(messages);
-//            newFrame.setContentPane(messageArea);
-//            messageArea.setEditable(false);
-//            JScrollPane scrollPane = new JScrollPane(messageArea);
-//            JOptionPane.showMessageDialog(this, scrollPane, "Your Messages", JOptionPane.INFORMATION_MESSAGE);
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(this, "Error during account view", "Error", JOptionPane.ERROR_MESSAGE);
+        String messages = reader.readLine();
+        System.out.println("we got here");
+        System.out.println(messages);
+//        System.out.println("we got here");
+//        while (!(messages = reader.readLine()).equals("END")) {
+//            System.out.println(messages);
+//            messageFrame.addMessage(messages);
 //        }
+
+
     }
 
     public static void main(String[] args) {
