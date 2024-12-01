@@ -106,7 +106,7 @@ public class User implements UserInterface, Serializable {
     }
 
     // Friend Methods
-    public void addFriend(User user) {
+    public String void addFriend(User user) {
         // Read current friends if any
         String[] tempFriends = new String[0];
         if (!friends.equals("NA")) {

@@ -194,17 +194,24 @@ public class Server implements Runnable {
                     User userAdding = database.findUser(userAddingString);
 
                     User friend = database.findUser(reader.readLine());
-                    System.out.println("The string of the friend is " + friend.getUsername());
-
-                    // actually adding friend
-                    userAdding.addFriend(friend);
-                    Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
-                    System.out.println(userAdding.getFriends());
-                    System.out.println(userAdding);
-                    database.saveDatabase(DATABASE_OBJECT);
-                    //database.saveInformation(DATABASE_TEXT);
-                    System.out.println(Database.users);
-
+                    if (friend != null) {
+                        writer.write("");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("The string of the friend is " + friend.getUsername());
+                        // actually adding friend
+                        userAdding.addFriend(friend);
+                        Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
+                        System.out.println(userAdding.getFriends());
+                        System.out.println(userAdding);
+                        database.saveDatabase(DATABASE_OBJECT);
+                        //database.saveInformation(DATABASE_TEXT);
+                        System.out.println(Database.users);
+                    } else {
+                        writer.write("null");
+                        writer.println();
+                        writer.flush();
+                    }
                 } else if (option.equals("Block user")) {
                     database.loadDatabase(DATABASE_OBJECT);
                     User user = database.findUser(reader.readLine());
@@ -233,19 +240,28 @@ public class Server implements Runnable {
                     database.loadDatabase(DATABASE_OBJECT);
                     String userRemovingString = reader.readLine();
                     System.out.println("The string username is " + userRemovingString);
-                    // finds user object who is ADDING (sending request) using string search
-                    User userAdding = database.findUser(userRemovingString);
+                    // finds user object who is REMOVING using string search
+                    User userRemoving = database.findUser(userRemovingString);
 
-                    User friend = database.findUser(reader.readLine());
-                    System.out.println("The string of the friend is " + friend.getUsername());
+                    User friendToRemove = database.findUser(reader.readLine());
+                    if (friendToRemove != null) {
+                        writer.write("");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("The string of the friend to remove is " + friendToRemove.getUsername());
+                        // actually adding friend
+                        userRemoving.removeFriend(friendToRemove);
+                        Database.users.set(Database.users.indexOf(database.findUser(userRemovingString)), userRemoving);
+                        System.out.println(userRemoving.getFriends());
+                        System.out.println(userRemoving);
+                        database.saveDatabase(DATABASE_OBJECT);
+                        //database.saveInformation(DATABASE_TEXT);
+                    } else {
+                        writer.write("null");
+                        writer.println();
+                        writer.flush();
+                    }
 
-                    // actually adding friend
-                    userAdding.removeFriend(friend);
-                    Database.users.set(Database.users.indexOf(database.findUser(userRemovingString)), userAdding);
-                    System.out.println(userAdding.getFriends());
-                    System.out.println(userAdding);
-                    database.saveDatabase(DATABASE_OBJECT);
-                    //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
                 } else if (option.equals("View Incoming Messages")) {
                     database.loadDatabase(DATABASE_OBJECT);

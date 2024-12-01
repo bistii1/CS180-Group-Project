@@ -16,7 +16,7 @@ public interface UserInterface {
     void updateProfile(String newUsername, String newPassword, String newProfilePicture);
 
     // Friend Management
-    void addFriend(User user);
+    void String addFriend(User user);
     void removeFriend(User user);
 
     // Blocked User Management
