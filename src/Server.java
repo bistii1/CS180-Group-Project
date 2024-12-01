@@ -217,12 +217,15 @@ public class Server implements Runnable {
                 } else if (option.equals("Block user")) {
                     database.loadDatabase(DATABASE_OBJECT);
                     User user = database.findUser(reader.readLine());
-                    User blocked = database.findUser(reader.readLine());
 
-                    user.blockUser(blocked);
-                    database.saveDatabase(DATABASE_OBJECT);
-                    //database.saveInformation(DATABASE_TEXT);
-                    System.out.println(Database.users);
+                    User blocked = database.findUser(reader.readLine());
+                    if (blocked != null) {
+                        user.blockUser(blocked);
+                        database.saveDatabase(DATABASE_OBJECT);
+                        //database.saveInformation(DATABASE_TEXT);
+                        System.out.println(Database.users);
+                    }
+
 
                 }
                 else if (option.equals("Message")) {
