@@ -153,6 +153,7 @@ public class Server implements Runnable {
                             user.sendMessage(receiver, reader.readLine());
                         }
                     }
+                    database.saveDatabase(DATABASE_OBJECT);
                 } else if (option.equals("Remove friend")) {
                     String userRemovingString = reader.readLine();
                     System.out.println("The string username is " + userRemovingString);
