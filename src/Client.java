@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 import java.net.Socket;
+import java.util.Arrays;
 
 public class Client extends JFrame implements ActionListener {
     private Socket socket;
@@ -281,9 +282,25 @@ public class Client extends JFrame implements ActionListener {
         writer.println(thisUserName);
         MessageFrame messageFrame = new MessageFrame("Messages " + thisUserName + " sent\n");
         String message = "";
+        int numbers = 0;
         while (!((message = reader.readLine()).equals("END"))) {
             messageFrame.addMessage(message);
+            numbers++;
         }
+        int[] options = new int[numbers];
+        for (int i = 0; i < numbers; i++) {
+            options[i] = i + 1;
+        }
+        Integer[] dropdownOptions = new Integer[numbers];
+        for (int i = 0; i < numbers; i++) {
+            dropdownOptions[i] = options[i];
+        }
+
+        Integer selectedOption = (Integer) JOptionPane.showInputDialog(null,
+                "Select a message to delete:", "Delete Message", JOptionPane.QUESTION_MESSAGE, null,
+                dropdownOptions, dropdownOptions[0]
+        );
+        writer.println(selectedOption);
     }
 
     public static void main(String[] args) {

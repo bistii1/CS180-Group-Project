@@ -80,6 +80,30 @@ public class Server implements Runnable {
         return results;
     }
 
+    private Message findMessage(User user, int number) {
+        ArrayList<Message> messages = user.getMessageHistory();
+        int i = 1;
+        for (Message message : messages) {
+            if (message.getSender().getUsername().equals(user.getUsername())) {
+                if (number == i) {
+                    return message;
+                }
+                i++;
+            }
+        }
+        return null;
+    }
+
+    private void deleteMessage(Message message) {
+        for (User user : Database.users) {
+            for (Message eachMessage : user.getMessageHistory()) {
+                if (eachMessage.equals(message)) {
+                    user.deleteMessage(eachMessage);
+                }
+            }
+        }
+    }
+
     @Override
     public void run() {
         try {
@@ -248,6 +272,10 @@ public class Server implements Runnable {
                     writer.write("END");
                     writer.println();
                     writer.flush();
+
+                    int number = Integer.parseInt(reader.readLine());
+                    deleteMessage(findMessage(user, number));
+                    database.saveDatabase(DATABASE_OBJECT);
                 }
             }
             writer.close();

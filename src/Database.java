@@ -98,7 +98,7 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
     }
 
     // saves database object to a file
-    public void saveDatabase(String filename) {
+    public synchronized void saveDatabase(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(Database.users);
             System.out.println("Database saved");

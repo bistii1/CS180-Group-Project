@@ -268,6 +268,10 @@ public class User implements UserInterface, Serializable {
 //        }
     }
 
+    public void deleteMessage(Message message) {
+        this.messageHistory.remove(message);
+    }
+
 //    public String getMessage() {
 ////        String result = "";
 ////        for (Message message : messageHistory) {
