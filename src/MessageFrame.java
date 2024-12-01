@@ -14,7 +14,7 @@ public class MessageFrame extends JFrame {
         JScrollPane scrollPane = new JScrollPane(textArea);
         getContentPane().add(scrollPane);
 
-        setTitle("All messages");
+        setTitle("Messages");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -22,10 +22,9 @@ public class MessageFrame extends JFrame {
     }
 
     public void addMessage(String message) {
-        System.out.println("Adding message: " + message); // Debug log
-        textArea.append(message + "\n"); // Append message
-        textArea.setCaretPosition(textArea.getDocument().getLength()); // Auto-scroll
-        textArea.revalidate(); // Ensure layout is updated
-        textArea.repaint(); // Force repaint
+        textArea.append(message + "\n");
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+        textArea.revalidate();
+        textArea.repaint();
     }
 }
