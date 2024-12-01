@@ -200,7 +200,9 @@ public class Server implements Runnable {
                         writer.flush();
                         System.out.println("The string of the friend is " + friend.getUsername());
                         // actually adding friend
-                        userAdding.addFriend(friend);
+                        writer.write(userAdding.addFriend(friend));
+                        writer.println();
+                        writer.flush();
                         Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
                         System.out.println(userAdding.getFriends());
                         System.out.println(userAdding);

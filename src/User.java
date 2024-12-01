@@ -106,7 +106,7 @@ public class User implements UserInterface, Serializable {
     }
 
     // Friend Methods
-    public String void addFriend(User user) {
+    public String addFriend(User user) {
         // Read current friends if any
         String[] tempFriends = new String[0];
         if (!friends.equals("NA")) {
@@ -121,20 +121,19 @@ public class User implements UserInterface, Serializable {
 
         // Check if user is blocked before adding as friend
         if (Arrays.asList(tempBlockedUsers).contains(user.getUsername())) {
-            System.out.println("This user has been blocked.");
-            return;
+            return "This user has been blocked.";
         }
 
         if (friends.equals("NA")) {
             friends = user.getUsername();
         } else {
             if (Arrays.asList(tempFriends).contains(user.getUsername())) {
-                System.out.println("This user already has " + user.getUsername() + " added as a friend.");
+                return "This user already has " + user.getUsername() + " added as a friend.";
             } else {
                 friends += ";" + user.getUsername();
             }
         }
-        System.out.println(friends);
+        return "Added " + user.getUsername() + " as a friend!";
     }
 
     public void removeFriend(User user) {

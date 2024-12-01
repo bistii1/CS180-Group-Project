@@ -232,7 +232,12 @@ public class Client extends JFrame implements ActionListener {
         if (condition.equals("null")) {
             JOptionPane.showMessageDialog(this, "No friend found", "Add Friend", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Added " + friend + "!", "Friend Added", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                condition = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, condition, "Add Friend", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     private void blockUser() {
