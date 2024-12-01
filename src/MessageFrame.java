@@ -4,24 +4,28 @@ public class MessageFrame extends JFrame {
 
     private JTextArea textArea;
 
-    public MessageFrame() {
+    public MessageFrame(String initialMessages) {
         textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
+        textArea.setEditable(false);
+        textArea.setText(initialMessages);
 
         JScrollPane scrollPane = new JScrollPane(textArea);
-        add(scrollPane);
+        getContentPane().add(scrollPane);
 
-        // Set the JFrame's properties
         setTitle("All messages");
         setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    // Method to add text dynamically
     public void addMessage(String message) {
-        textArea.append(message + "\n"); // Add new message with a newline
+        System.out.println("Adding message: " + message); // Debug log
+        textArea.append(message + "\n"); // Append message
+        textArea.setCaretPosition(textArea.getDocument().getLength()); // Auto-scroll
+        textArea.revalidate(); // Ensure layout is updated
+        textArea.repaint(); // Force repaint
     }
 }

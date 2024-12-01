@@ -39,13 +39,30 @@ public class Server implements Runnable {
         return null;
     }
 
-    private ArrayList<String> loadMessages(User user) {
+    private ArrayList<String> loadMessages(User user, String sentOrIncoming) {
+        System.out.println("User is " + user.getUsername());
+        System.out.println(user.getMessageHistory());
         ArrayList<Message> messages = user.getMessageHistory();
         ArrayList<String> results = new ArrayList<>();
-        for (Message message : messages) {
-            if (!message.getSender().getUsername().equals(user.getUsername())) {
-                String newMessage = "From " + message.getSender().getUsername() + ": " + message.getContent();
-                results.add(newMessage);
+        if (sentOrIncoming.equals("incoming")) {
+            for (Message message : messages) {
+                if (!message.getSender().getUsername().equals(user.getUsername())) {
+                    String newMessage = "From " + message.getSender().getUsername() + ": " + message.getContent();
+                    results.add(newMessage);
+                }
+            }
+            if (results.isEmpty()) {
+                results.add(user.getUsername() + " has no incoming messages.");
+            }
+        } else if (sentOrIncoming.equals("outgoing")) {
+            for (Message message : messages) {
+                if (message.getSender().getUsername().equals(user.getUsername())) {
+                    String newMessage = "You sent " + message.getContent() + " to " + message.getRecipient().getUsername();
+                    results.add(newMessage);
+                }
+            }
+            if (results.isEmpty()) {
+                results.add(user.getUsername() + " has no outgoing messages.");
             }
         }
         return results;
@@ -183,14 +200,30 @@ public class Server implements Runnable {
                     database.saveDatabase(DATABASE_OBJECT);
                     //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
-                } else if (option.equals("View Messages")) {
+                } else if (option.equals("View Incoming Messages")) {
                     User user = database.findUser(reader.readLine());
-//                    ArrayList<String> messages = loadMessages(user);
-//                    for (String message : messages) {
-//                        writer.write(message);
-//                    }
-//                    writer.write("END");
-                    writer.write(String.valueOf(loadMessages(user)));
+                    System.out.println(user);
+                    ArrayList<String> messages = loadMessages(user, "incoming");
+                    for (String message : messages) {
+                        writer.write(message);
+                        writer.println();
+                        writer.flush();
+                    }
+                    writer.write("END");
+                    writer.println();
+                    writer.flush();
+                } else if (option.equals("View Sent Messages")) {
+                    User user = database.findUser(reader.readLine());
+                    System.out.println(user);
+                    ArrayList<String> messages = loadMessages(user, "outgoing");
+                    for (String message : messages) {
+                        writer.write(message);
+                        writer.println();
+                        writer.flush();
+                    }
+                    writer.write("END");
+                    writer.println();
+                    writer.flush();
                 }
             }
             writer.close();
@@ -205,18 +238,11 @@ public class Server implements Runnable {
     // echo server that accepts multiple clients
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(2424);
-
         //database.loadDatabase(FILENAME);
-
-
         while (true) {
             Socket socket = serverSocket.accept();
             Server server = new Server(socket);
             new Thread(server).start();
         }
-
-
     }
-
-
 }

@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Client extends JFrame implements ActionListener {
     private Socket socket;
@@ -15,7 +14,8 @@ public class Client extends JFrame implements ActionListener {
 
     // GUI Components
     private JPanel mainPanel;
-    private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton, viewMessagesButton;
+    private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton,
+            viewIncomingMessagesButton, viewSentMessagesButton;
 
     public Client() {
         // Connect to server
@@ -37,28 +37,31 @@ public class Client extends JFrame implements ActionListener {
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(3, 1));
+        mainPanel.setLayout(new GridLayout(4, 1));
 
         searchUsersButton = new JButton("Search All Users");
         addFriendButton = new JButton("Add Friend");
         messageFriendButton = new JButton("Message Friend");
         blockButton = new JButton("Block User");
         removeFriendButton = new JButton("Remove Friend");
-        viewMessagesButton = new JButton("View Messages");
+        viewIncomingMessagesButton = new JButton("View Incoming Messages");
+        viewSentMessagesButton = new JButton("View Sent Messages");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
         messageFriendButton.addActionListener(this);
         blockButton.addActionListener(this);
         removeFriendButton.addActionListener(this);
-        viewMessagesButton.addActionListener(this);
+        viewIncomingMessagesButton.addActionListener(this);
+        viewSentMessagesButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
         mainPanel.add(messageFriendButton);
         mainPanel.add(blockButton);
         mainPanel.add(removeFriendButton);
-        mainPanel.add(viewMessagesButton);
+        mainPanel.add(viewIncomingMessagesButton);
+        mainPanel.add(viewSentMessagesButton);
 
         loginOrCreateAccount();
     }
@@ -162,9 +165,15 @@ public class Client extends JFrame implements ActionListener {
             blockUser();
         } else if (e.getSource() == removeFriendButton) {
             removeFriend();
-        } else if (e.getSource() == viewMessagesButton) {
+        } else if (e.getSource() == viewIncomingMessagesButton) {
             try {
-                viewMessages();
+                viewIncomingMessages();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        } else if (e.getSource() == viewSentMessagesButton) {
+            try {
+                viewSentMessages();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -237,21 +246,24 @@ public class Client extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(this, "Removed " + friend + "!", "Friend Removed", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void viewMessages() throws IOException {
-        MessageFrame messageFrame = new MessageFrame();
-        writer.println("View Messages");
+    private void viewIncomingMessages() throws IOException {
+        writer.println("View Incoming Messages");
         writer.println(thisUserName);
+        MessageFrame messageFrame = new MessageFrame("Messages to " + thisUserName + "\n");
+        String message = "";
+        while (!((message = reader.readLine()).equals("END"))) {
+            messageFrame.addMessage(message);
+        }
+    }
 
-        String messages = reader.readLine();
-        System.out.println("we got here");
-        System.out.println(messages);
-//        System.out.println("we got here");
-//        while (!(messages = reader.readLine()).equals("END")) {
-//            System.out.println(messages);
-//            messageFrame.addMessage(messages);
-//        }
-
-
+    private void viewSentMessages() throws IOException {
+        writer.println("View Sent Messages");
+        writer.println(thisUserName);
+        MessageFrame messageFrame = new MessageFrame("Messages " + thisUserName + " sent\n");
+        String message = "";
+        while (!((message = reader.readLine()).equals("END"))) {
+            messageFrame.addMessage(message);
+        }
     }
 
     public static void main(String[] args) {
