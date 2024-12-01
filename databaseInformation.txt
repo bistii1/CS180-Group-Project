@@ -1,0 +1,2 @@
+bisti,potdar,p.jpg,NA,NA,[yatharth,bisti,hi bisti]
+yatharth,jain,j.jpg,bisti,NA,[yatharth,bisti,hi bisti]

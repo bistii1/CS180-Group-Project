@@ -3,6 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.io.*;
+import java.util.Iterator;
 
 
 public class Server implements Runnable {
@@ -94,14 +95,18 @@ public class Server implements Runnable {
         return null;
     }
 
-    private void deleteMessage(Message message) {
+    private synchronized void deleteMessage(Message message) {
         for (User user : Database.users) {
-            for (Message eachMessage : user.getMessageHistory()) {
+            Iterator<Message> iterator = user.getMessageHistory().iterator();
+            while (iterator.hasNext()) {
+                Message eachMessage = iterator.next();
                 if (eachMessage.equals(message)) {
+                    iterator.remove();
                     user.deleteMessage(eachMessage);
                 }
             }
         }
+        database.saveDatabase(DATABASE_OBJECT);
     }
 
     @Override
@@ -119,6 +124,7 @@ public class Server implements Runnable {
                 String option = reader.readLine();
                 System.out.println(option);
                 if (option.equals("Login")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     boolean loggedIn = false;
                     while (!loggedIn) {
                         String username = reader.readLine();
@@ -136,6 +142,7 @@ public class Server implements Runnable {
                         }
                     }
                 } else if (option.equals("Create account")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     String username = reader.readLine();
                     String password = reader.readLine();
                     String profilePicture = reader.readLine();
@@ -155,6 +162,7 @@ public class Server implements Runnable {
                 } else if (option.equals("Search")) {
                     boolean searched = false;
                     while (!searched) {
+                        database.loadDatabase(DATABASE_OBJECT);
                         String search = reader.readLine();
                         System.out.println("Received search for: " + search);
 
@@ -179,6 +187,7 @@ public class Server implements Runnable {
                         }
                     }
                 } else if (option.equals("Add friend")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     String userAddingString = reader.readLine();
                     System.out.println("The string username is " + userAddingString);
                     // finds user object who is ADDING (sending request) using string search
@@ -197,7 +206,7 @@ public class Server implements Runnable {
                     System.out.println(Database.users);
 
                 } else if (option.equals("Block user")) {
-
+                    database.loadDatabase(DATABASE_OBJECT);
                     User user = database.findUser(reader.readLine());
                     User blocked = database.findUser(reader.readLine());
 
@@ -208,6 +217,7 @@ public class Server implements Runnable {
 
                 }
                 else if (option.equals("Message")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     boolean allFriends = Boolean.parseBoolean(reader.readLine());
                     User user = database.findUser(reader.readLine());
                     if (allFriends) {
@@ -220,6 +230,7 @@ public class Server implements Runnable {
                     }
                     database.saveDatabase(DATABASE_OBJECT);
                 } else if (option.equals("Remove friend")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     String userRemovingString = reader.readLine();
                     System.out.println("The string username is " + userRemovingString);
                     // finds user object who is ADDING (sending request) using string search
@@ -237,6 +248,7 @@ public class Server implements Runnable {
                     //database.saveInformation(DATABASE_TEXT);
                     System.out.println(Database.users);
                 } else if (option.equals("View Incoming Messages")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     User user = database.findUser(reader.readLine());
                     System.out.println(user);
                     ArrayList<String> messages = loadMessages(user, "incoming");
@@ -249,6 +261,7 @@ public class Server implements Runnable {
                     writer.println();
                     writer.flush();
                 } else if (option.equals("View Sent Messages")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     User user = database.findUser(reader.readLine());
                     System.out.println(user);
                     ArrayList<String> messages = loadMessages(user, "outgoing");
@@ -261,6 +274,7 @@ public class Server implements Runnable {
                     writer.println();
                     writer.flush();
                 } else if (option.equals("Delete Messages")) {
+                    database.loadDatabase(DATABASE_OBJECT);
                     User user = database.findUser(reader.readLine());
                     System.out.println(user);
                     ArrayList<String> messages = loadMessages(user, "delete");
@@ -275,7 +289,7 @@ public class Server implements Runnable {
 
                     int number = Integer.parseInt(reader.readLine());
                     deleteMessage(findMessage(user, number));
-                    database.saveDatabase(DATABASE_OBJECT);
+                    //database.saveDatabase(DATABASE_OBJECT);
                 }
             }
             writer.close();

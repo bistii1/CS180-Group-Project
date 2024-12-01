@@ -301,6 +301,8 @@ public class Client extends JFrame implements ActionListener {
                 dropdownOptions, dropdownOptions[0]
         );
         writer.println(selectedOption);
+
+        JOptionPane.showMessageDialog(null, "Refresh page to see change if deleted", "Message Deleted", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {
