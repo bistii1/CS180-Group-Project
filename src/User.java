@@ -295,13 +295,17 @@ public class User implements UserInterface, Serializable {
         String[] friendUsernames = new String[0];
         if (!friends.equals("NA")) {
             friendUsernames = friends.split(";");
+            System.out.println(friends);
+            System.out.println("------ " + Arrays.toString(friendUsernames));
             for (String username : friendUsernames) {
+                System.out.println("++ " + username);
+                System.out.println("-- " + tempDatabase.findUser(username).toString());
                 friendUsernamesArrayList.add(tempDatabase.findUser(username));
             }
-        }
-
-        for (User friend : friendUsernamesArrayList) {
-            sendMessage(friend, content);
+            System.out.println("***** " + friendUsernamesArrayList);
+            for (User friend : friendUsernamesArrayList) {
+                sendMessage(friend, content);
+            }
         }
     }
 
