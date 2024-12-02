@@ -148,7 +148,7 @@ public class User implements UserInterface, Serializable {
         return "Added " + user.getUsername() + " as a friend!";
     }
 
-    public void removeFriend(User user) {
+    public String removeFriend(User user) {
         // Read current users
         String[] temp;
         ArrayList<String> tempFriends = new ArrayList<>();
@@ -169,8 +169,9 @@ public class User implements UserInterface, Serializable {
                 friends = String.join(";", tempFriends);
             }
             user.removeFriend(this);
+            return "Friend has been removed.";
         } else {
-            System.out.println("This user is not in your friend list.");
+            return "This user is not in your friend list.";
         }
     }
 
@@ -289,8 +290,9 @@ public class User implements UserInterface, Serializable {
 //        return result;
 //    }
 
-    public void sendMessageAll(String content) {
+    /*public void sendMessageAll(String content) {
         Database tempDatabase = new Database();
+        tempDatabase.viewUsers();
         ArrayList<User> friendUsernamesArrayList = new ArrayList<>();
         String[] friendUsernames = new String[0];
         if (!friends.equals("NA")) {
@@ -307,7 +309,7 @@ public class User implements UserInterface, Serializable {
                 sendMessage(friend, content);
             }
         }
-    }
+    }*/
 
     public void sendMessage(User recipient, String content) {
         Message message = new Message(this, recipient, content);

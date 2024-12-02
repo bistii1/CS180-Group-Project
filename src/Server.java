@@ -246,15 +246,17 @@ public class Server implements Runnable {
                 }
                 else if (option.equals("Message")) {
                     database.loadDatabase(DATABASE_OBJECT);
-                    boolean allFriends = Boolean.parseBoolean(reader.readLine());
                     User user = database.findUser(reader.readLine());
-                    if (allFriends) {
-                        user.sendMessageAll(reader.readLine());
+                    User receiver = database.findUser(reader.readLine());
+                    if (receiver == null) {
+                        writer.write("null");
+                        writer.println();
+                        writer.flush();
                     } else {
-                        User receiver = database.findUser(reader.readLine());
-                        if (receiver != null) {
-                            user.sendMessage(receiver, reader.readLine());
-                        }
+                        user.sendMessage(receiver, reader.readLine());
+                        writer.write("");
+                        writer.println();
+                        writer.flush();
                     }
                     database.saveDatabase(DATABASE_OBJECT);
                 } else if (option.equals("Remove friend")) {
@@ -263,7 +265,6 @@ public class Server implements Runnable {
                     System.out.println("The string username is " + userRemovingString);
                     // finds user object who is REMOVING using string search
                     User userRemoving = database.findUser(userRemovingString);
-
                     User friendToRemove = database.findUser(reader.readLine());
                     if (friendToRemove != null) {
                         writer.write("");
@@ -271,10 +272,10 @@ public class Server implements Runnable {
                         writer.flush();
                         System.out.println("The string of the friend to remove is " + friendToRemove.getUsername());
                         // actually adding friend
-                        userRemoving.removeFriend(friendToRemove);
+                        writer.write(userRemoving.removeFriend(friendToRemove));
+                        writer.println();
+                        writer.flush();
                         Database.users.set(Database.users.indexOf(database.findUser(userRemovingString)), userRemoving);
-                        System.out.println(userRemoving.getFriends());
-                        System.out.println(userRemoving);
                         database.saveDatabase(DATABASE_OBJECT);
                         //database.saveInformation(DATABASE_TEXT);
                     } else {

@@ -187,7 +187,11 @@ public class Client extends JFrame implements ActionListener {
         } else if (e.getSource() == addFriendButton) {
             addFriend();
         } else if (e.getSource() == sendMessageButton) {
-            sendMessage();
+            try {
+                sendMessage();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         } else if (e.getSource() == blockButton) {
             blockUser();
         } else if (e.getSource() == removeFriendButton) {
@@ -297,20 +301,29 @@ public class Client extends JFrame implements ActionListener {
     }
 
 
-    private void sendMessage() {
+    private void sendMessage() throws IOException {
         writer.println("Message");
-        boolean allFriends = JOptionPane.showConfirmDialog(this, "Do you want to send this message to all friends?", "allFriends", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-        writer.println(allFriends);
+//        boolean allFriends = JOptionPane.showConfirmDialog(this, "Do you want to send this message to all friends?", "allFriends", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+//        writer.println(allFriends);
+//        writer.println(thisUserName);
+//        if (allFriends) {
+//            String message = JOptionPane.showInputDialog(this, "Enter your message:", "Message all", JOptionPane.QUESTION_MESSAGE);
+//            writer.println(message);
+//        } else {
+//            String friend = JOptionPane.showInputDialog(this, "Enter friend's username to message:", "Message Friend", JOptionPane.QUESTION_MESSAGE);
+//            String message = JOptionPane.showInputDialog(this, "Enter your message:", "Message Friend", JOptionPane.QUESTION_MESSAGE);
+//            writer.println(friend + "\n" + message);
+//        }
         writer.println(thisUserName);
-        if (allFriends) {
-            String message = JOptionPane.showInputDialog(this, "Enter your message:", "Message all", JOptionPane.QUESTION_MESSAGE);
-            writer.println(message);
+        String friend = JOptionPane.showInputDialog(this, "Enter username to message:", "Send Message", JOptionPane.QUESTION_MESSAGE);
+        String message = JOptionPane.showInputDialog(this, "Enter your message:", "Send Message", JOptionPane.QUESTION_MESSAGE);
+        writer.println(friend + "\n" + message);
+        String condition = reader.readLine();
+        if (condition.equals("null")) {
+            JOptionPane.showMessageDialog(this, "No user found", "Send Message", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            String friend = JOptionPane.showInputDialog(this, "Enter friend's username to message:", "Message Friend", JOptionPane.QUESTION_MESSAGE);
-            String message = JOptionPane.showInputDialog(this, "Enter your message:", "Message Friend", JOptionPane.QUESTION_MESSAGE);
-            writer.println(friend + "\n" + message);
+            JOptionPane.showMessageDialog(this, "Message sent!", "Send Message", JOptionPane.INFORMATION_MESSAGE);
         }
-
     }
 
 
@@ -330,7 +343,12 @@ public class Client extends JFrame implements ActionListener {
         if (condition.equals("null")) {
             JOptionPane.showMessageDialog(this, "No friend found", "Remove Friend", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Removed " + friend + "!", "Friend Removed", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                condition = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, condition, "Remove friend", JOptionPane.INFORMATION_MESSAGE);
         }
 
     }

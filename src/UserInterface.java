@@ -17,7 +17,7 @@ public interface UserInterface {
 
     // Friend Management
     String addFriend(User user);
-    void removeFriend(User user);
+    String removeFriend(User user);
 
     // Blocked User Management
     String blockUser(User user);
