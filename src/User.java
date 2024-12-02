@@ -215,9 +215,26 @@ public class User implements UserInterface, Serializable {
     }
 
     public String unblockUser(User user) {
-        String[] temp;
-        ArrayList<String> tempFriends = new ArrayList<>();
+        String[] tempB;
+        ArrayList<String> tempBlocked = new ArrayList<>();
+        if (!blockedUsers.equals("NA")) {
+            tempB = blockedUsers.split(";");
+            tempBlocked = new ArrayList<>(Arrays.asList(tempB));
+        }
 
+        if (tempBlocked.contains(user.getUsername())) {
+            tempBlocked.remove(user.getUsername());
+            if (tempBlocked.isEmpty()) {
+                blockedUsers = "NA";
+            } else if (tempBlocked.size() == 1) {
+                blockedUsers = tempBlocked.get(0);
+            } else {
+                blockedUsers = String.join(";", tempBlocked);
+            }
+            return "This user has been blocked";
+        } else {
+            return "This user was never blocked.";
+        }
     }
 
     // Profile Picture Methods

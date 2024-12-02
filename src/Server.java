@@ -352,7 +352,7 @@ public class Server implements Runnable {
                         writer.write("");
                         writer.println();
                         writer.flush();
-                        writer.write(user.blockUser(unblocked));
+                        writer.write(user.unblockUser(unblocked));
                         writer.println();
                         writer.flush();
                         database.saveDatabase(DATABASE_OBJECT);
