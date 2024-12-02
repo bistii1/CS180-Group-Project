@@ -142,23 +142,28 @@ public class Server implements Runnable {
                         }
                     }
                 } else if (option.equals("Create account")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    String username = reader.readLine();
-                    String password = reader.readLine();
-                    String profilePicture = reader.readLine();
-                    User createUser = new User(username, password, profilePicture,
-                            "NA", "NA", new ArrayList<>());
-                    boolean successful = database.addUser(createUser);
-                    if (successful) {
-                        writer.write(createUser.getUsername());
-                        writer.println();
-                        writer.flush();
-                        System.out.println("Created new account" + Database.users);
-                    } else {
-                        writer.write("User already exists");
-                        writer.println();
-                        writer.flush();
+                    boolean created = false;
+                    while (!created) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        String username = reader.readLine();
+                        String password = reader.readLine();
+                        String profilePicture = reader.readLine();
+                        User createUser = new User(username, password, profilePicture,
+                                "NA", "NA", new ArrayList<>());
+                        boolean successful = database.addUser(createUser);
+                        if (successful) {
+                            writer.write(createUser.getUsername());
+                            writer.println();
+                            writer.flush();
+                            System.out.println("Created new account" + Database.users);
+                            created = true;
+                        } else {
+                            writer.write("User already exists");
+                            writer.println();
+                            writer.flush();
+                        }
                     }
+
                 } else if (option.equals("Search")) {
                     boolean searched = false;
                     while (!searched) {
@@ -302,18 +307,45 @@ public class Server implements Runnable {
                     User user = database.findUser(reader.readLine());
                     System.out.println(user);
                     ArrayList<String> messages = loadMessages(user, "delete");
-                    for (String message : messages) {
-                        writer.write(message);
+                    if (messages.getFirst().equals(user.getUsername() + " has no outgoing messages to delete.")) {
+                        writer.write("false");
                         writer.println();
                         writer.flush();
-                    }
-                    writer.write("END");
-                    writer.println();
-                    writer.flush();
+                        for (String message : messages) {
+                            writer.write(message);
+                            writer.println();
+                            writer.flush();
+                        }
+                        writer.write("END");
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        writer.write("true");
+                        writer.println();
+                        writer.flush();
+                        for (String message : messages) {
+                            writer.write(message);
+                            writer.println();
+                            writer.flush();
+                        }
+                        writer.write("END");
+                        writer.println();
+                        writer.flush();
 
-                    int number = Integer.parseInt(reader.readLine());
-                    deleteMessage(findMessage(user, number));
-                    //database.saveDatabase(DATABASE_OBJECT);
+                        try {
+                            int number = Integer.parseInt(reader.readLine());
+                            System.out.println(number);
+                            deleteMessage(findMessage(user, number));
+                            writer.write("true");
+                            writer.println();
+                            writer.flush();
+                        } catch (NumberFormatException e) {
+                            writer.write("false");
+                            writer.println();
+                            writer.flush();
+                        }
+                    }
+
                 }
             }
             writer.close();

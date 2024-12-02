@@ -330,26 +330,32 @@ public class Client extends JFrame implements ActionListener {
         MessageFrame messageFrame = new MessageFrame("Messages " + thisUserName + " sent\n");
         String message = "";
         int numbers = 0;
+        boolean condition = Boolean.parseBoolean(reader.readLine());
         while (!((message = reader.readLine()).equals("END"))) {
             messageFrame.addMessage(message);
             numbers++;
         }
-        int[] options = new int[numbers];
-        for (int i = 0; i < numbers; i++) {
-            options[i] = i + 1;
-        }
-        Integer[] dropdownOptions = new Integer[numbers];
-        for (int i = 0; i < numbers; i++) {
-            dropdownOptions[i] = options[i];
-        }
+        if (condition) {
+            int[] options = new int[numbers];
+            for (int i = 0; i < numbers; i++) {
+                options[i] = i + 1;
+            }
+            Integer[] dropdownOptions = new Integer[numbers];
+            for (int i = 0; i < numbers; i++) {
+                dropdownOptions[i] = options[i];
+            }
 
-        Integer selectedOption = (Integer) JOptionPane.showInputDialog(null,
-                "Select a message to delete:", "Delete Message", JOptionPane.QUESTION_MESSAGE, null,
-                dropdownOptions, dropdownOptions[0]
-        );
-        writer.println(selectedOption);
+            Integer selectedOption = (Integer) JOptionPane.showInputDialog(null,
+                    "Select a message to delete:", "Delete Message", JOptionPane.QUESTION_MESSAGE, null,
+                    dropdownOptions, dropdownOptions[0]
+            );
+            writer.println(selectedOption);
 
-        JOptionPane.showMessageDialog(null, "Refresh page to see change if deleted", "Message Deleted", JOptionPane.INFORMATION_MESSAGE);
+            condition = Boolean.parseBoolean(reader.readLine());
+            if (condition) {
+                JOptionPane.showMessageDialog(null, "Refresh page to see change", "Message Deleted", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
     }
 
     public static void main(String[] args) {
