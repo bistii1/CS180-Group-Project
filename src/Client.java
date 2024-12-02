@@ -322,7 +322,12 @@ public class Client extends JFrame implements ActionListener {
         if (condition.equals("null")) {
             JOptionPane.showMessageDialog(this, "No user found", "Send Message", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Message sent!", "Send Message", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                condition = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, condition, "Send Message", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

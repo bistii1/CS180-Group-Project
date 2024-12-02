@@ -253,8 +253,10 @@ public class Server implements Runnable {
                         writer.println();
                         writer.flush();
                     } else {
-                        user.sendMessage(receiver, reader.readLine());
                         writer.write("");
+                        writer.println();
+                        writer.flush();
+                        writer.write(user.sendMessage(receiver, reader.readLine()));
                         writer.println();
                         writer.flush();
                     }

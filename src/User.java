@@ -311,10 +311,32 @@ public class User implements UserInterface, Serializable {
         }
     }*/
 
-    public void sendMessage(User recipient, String content) {
-        Message message = new Message(this, recipient, content);
-        recipient.messageHistory.add(message);
-        this.messageHistory.add(message);
+    public boolean blocked(User user) {
+        String[] tempB;
+        ArrayList<String> tempBlocked = new ArrayList<>();
+        if (!blockedUsers.equals("NA")) {
+            tempB = blockedUsers.split(";");
+            tempBlocked = new ArrayList<>(Arrays.asList(tempB));
+        }
+
+        if (tempBlocked.contains(user.getUsername())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String sendMessage(User recipient, String content) {
+        if (this.blocked(recipient)) {
+            return "You have this user blocked";
+        } else if (recipient.blocked(this)) {
+            return "This user has you blocked";
+        } else {
+            Message message = new Message(this, recipient, content);
+            recipient.messageHistory.add(message);
+            this.messageHistory.add(message);
+            return "Message sent!";
+        }
 //        System.out.println(recipient.messageHistory);
 //        System.out.println(recipient);
 //        for (User user : Database.users) {
