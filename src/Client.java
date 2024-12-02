@@ -14,8 +14,8 @@ public class Client extends JFrame implements ActionListener {
 
     // GUI Components
     private JPanel mainPanel;
-    private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton,
-            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton, unblockButton;
+    private JButton searchUsersButton, addFriendButton, sendMessageButton, blockButton, removeFriendButton,
+            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton, unblockButton, viewFriendMessagesButton;
 
     public Client() {
         // Connect to server
@@ -41,33 +41,36 @@ public class Client extends JFrame implements ActionListener {
 
         searchUsersButton = new JButton("Search All Users");
         addFriendButton = new JButton("Add Friend");
-        messageFriendButton = new JButton("Message Friend");
+        sendMessageButton = new JButton("Send Message");
         blockButton = new JButton("Block User");
         removeFriendButton = new JButton("Remove Friend");
         viewAllIncomingMessagesButton = new JButton("View All Incoming Messages");
         viewSentMessagesButton = new JButton("View Sent Messages");
         deleteMessagesButton = new JButton("Delete Messages");
         unblockButton = new JButton("Unblock User");
+        viewFriendMessagesButton = new JButton("View Friend Messages");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
-        messageFriendButton.addActionListener(this);
+        sendMessageButton.addActionListener(this);
         blockButton.addActionListener(this);
         removeFriendButton.addActionListener(this);
         viewAllIncomingMessagesButton.addActionListener(this);
         viewSentMessagesButton.addActionListener(this);
         deleteMessagesButton.addActionListener(this);
         unblockButton.addActionListener(this);
+        viewFriendMessagesButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
-        mainPanel.add(messageFriendButton);
+        mainPanel.add(sendMessageButton);
         mainPanel.add(blockButton);
         mainPanel.add(removeFriendButton);
         mainPanel.add(viewAllIncomingMessagesButton);
         mainPanel.add(viewSentMessagesButton);
         mainPanel.add(deleteMessagesButton);
         mainPanel.add(unblockButton);
+        mainPanel.add(viewFriendMessagesButton);
 
         loginOrCreateAccount();
     }
@@ -183,8 +186,8 @@ public class Client extends JFrame implements ActionListener {
             searchUsers();
         } else if (e.getSource() == addFriendButton) {
             addFriend();
-        } else if (e.getSource() == messageFriendButton) {
-            messageFriend();
+        } else if (e.getSource() == sendMessageButton) {
+            sendMessage();
         } else if (e.getSource() == blockButton) {
             blockUser();
         } else if (e.getSource() == removeFriendButton) {
@@ -209,6 +212,12 @@ public class Client extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == unblockButton) {
             unblockUser();
+        } else if (e.getSource() == viewFriendMessagesButton) {
+            try {
+                viewIncomingFriendMessages();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -288,7 +297,7 @@ public class Client extends JFrame implements ActionListener {
     }
 
 
-    private void messageFriend() {
+    private void sendMessage() {
         writer.println("Message");
         boolean allFriends = JOptionPane.showConfirmDialog(this, "Do you want to send this message to all friends?", "allFriends", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
         writer.println(allFriends);
@@ -402,6 +411,16 @@ public class Client extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
             JOptionPane.showMessageDialog(this, condition, "Unblock User", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void viewIncomingFriendMessages() throws IOException {
+        writer.println("View Incoming Friend Messages");
+        writer.println(thisUserName);
+        MessageFrame messageFrame = new MessageFrame("Messages to " + thisUserName + " from friends\n");
+        String message = "";
+        while (!((message = reader.readLine()).equals("END"))) {
+            messageFrame.addMessage(message);
         }
     }
 

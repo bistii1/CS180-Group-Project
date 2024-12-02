@@ -55,6 +55,16 @@ public class Server implements Runnable {
             if (results.isEmpty()) {
                 results.add(user.getUsername() + " has no incoming messages.");
             }
+        } else if (sentOrIncoming.equals("friend incoming")) {
+            for (Message message : messages) {
+                if (!message.getSender().getUsername().equals(user.getUsername()) && message.getSender().friendsWith(message.getRecipient())) {
+                    String newMessage = "From " + message.getSender().getUsername() + ": " + message.getContent();
+                    results.add(newMessage);
+                }
+            }
+            if (results.isEmpty()) {
+                results.add(user.getUsername() + " has no incoming messages from friends.");
+            }
         } else if (sentOrIncoming.equals("outgoing")) {
             for (Message message : messages) {
                 if (message.getSender().getUsername().equals(user.getUsername())) {
@@ -361,6 +371,19 @@ public class Server implements Runnable {
                         writer.println();
                         writer.flush();
                     }
+                } else if (option.equals("View Incoming Friend Messages")) {
+                    database.loadDatabase(DATABASE_OBJECT);
+                    User user = database.findUser(reader.readLine());
+                    System.out.println(user);
+                    ArrayList<String> messages = loadMessages(user, "friend incoming");
+                    for (String message : messages) {
+                        writer.write(message);
+                        writer.println();
+                        writer.flush();
+                    }
+                    writer.write("END");
+                    writer.println();
+                    writer.flush();
                 }
             }
             writer.close();

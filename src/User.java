@@ -237,6 +237,23 @@ public class User implements UserInterface, Serializable {
         }
     }
 
+    public boolean friendsWith(User user) {
+        String[] tempF;
+        ArrayList<String> tempFriends = new ArrayList<>();
+        if (!friends.equals("NA")) {
+            tempF = friends.split(";");
+            tempFriends = new ArrayList<>(Arrays.asList(tempF));
+        } else {
+            return false;
+        }
+
+        if (tempFriends.contains(user.getUsername())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Profile Picture Methods
 
     // Method to load profile picture into a JLabel. Would be used in Phase 3 with more edits
