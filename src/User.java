@@ -126,11 +126,13 @@ public class User implements UserInterface, Serializable {
 
         if (friends.equals("NA")) {
             friends = user.getUsername();
+            user.addFriend(this);
         } else {
             if (Arrays.asList(tempFriends).contains(user.getUsername())) {
                 return "This user already has " + user.getUsername() + " added as a friend.";
             } else {
                 friends += ";" + user.getUsername();
+                user.addFriend(this);
             }
         }
         return "Added " + user.getUsername() + " as a friend!";
@@ -151,10 +153,13 @@ public class User implements UserInterface, Serializable {
             tempFriends.remove(user.getUsername());
             if (tempFriends.isEmpty()) {
                 friends = "NA";
+                user.removeFriend(this);
             } else if (tempFriends.size() == 1) {
                 friends = tempFriends.get(0);
+                user.removeFriend(this);
             } else {
                 friends = String.join(";", tempFriends);
+                user.removeFriend(this);
             }
             //user.getFriends().remove(this); // Remove this user from the friend's list
         } else {

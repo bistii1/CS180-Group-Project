@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 import java.net.Socket;
-import java.util.Arrays;
 
 public class Client extends JFrame implements ActionListener {
     private Socket socket;
@@ -16,7 +15,7 @@ public class Client extends JFrame implements ActionListener {
     // GUI Components
     private JPanel mainPanel;
     private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton,
-            viewIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton;
+            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton;
 
     public Client() {
         // Connect to server
@@ -45,7 +44,7 @@ public class Client extends JFrame implements ActionListener {
         messageFriendButton = new JButton("Message Friend");
         blockButton = new JButton("Block User");
         removeFriendButton = new JButton("Remove Friend");
-        viewIncomingMessagesButton = new JButton("View Incoming Messages");
+        viewAllIncomingMessagesButton = new JButton("View All Incoming Messages");
         viewSentMessagesButton = new JButton("View Sent Messages");
         deleteMessagesButton = new JButton("Delete Messages");
 
@@ -54,7 +53,7 @@ public class Client extends JFrame implements ActionListener {
         messageFriendButton.addActionListener(this);
         blockButton.addActionListener(this);
         removeFriendButton.addActionListener(this);
-        viewIncomingMessagesButton.addActionListener(this);
+        viewAllIncomingMessagesButton.addActionListener(this);
         viewSentMessagesButton.addActionListener(this);
         deleteMessagesButton.addActionListener(this);
 
@@ -63,7 +62,7 @@ public class Client extends JFrame implements ActionListener {
         mainPanel.add(messageFriendButton);
         mainPanel.add(blockButton);
         mainPanel.add(removeFriendButton);
-        mainPanel.add(viewIncomingMessagesButton);
+        mainPanel.add(viewAllIncomingMessagesButton);
         mainPanel.add(viewSentMessagesButton);
         mainPanel.add(deleteMessagesButton);
 
@@ -169,7 +168,7 @@ public class Client extends JFrame implements ActionListener {
             blockUser();
         } else if (e.getSource() == removeFriendButton) {
             removeFriend();
-        } else if (e.getSource() == viewIncomingMessagesButton) {
+        } else if (e.getSource() == viewAllIncomingMessagesButton) {
             try {
                 viewIncomingMessages();
             } catch (IOException ex) {
