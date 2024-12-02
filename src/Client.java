@@ -117,9 +117,27 @@ public class Client extends JFrame implements ActionListener {
             boolean created = false;
 
             while (!created) {
-                String username = JOptionPane.showInputDialog(this, "Enter a username:", "Create Account", JOptionPane.QUESTION_MESSAGE);
-                String password = JOptionPane.showInputDialog(this, "Enter a password:", "Create Account", JOptionPane.QUESTION_MESSAGE);
+
+                String username = "";
+                while (true) {
+                    username = JOptionPane.showInputDialog(this, "Enter a username:", "Create Account", JOptionPane.QUESTION_MESSAGE);
+                    if (!username.contains(";") && !username.equals("NA") && !username.isEmpty()) {
+                        break;
+                    }
+                    JOptionPane.showMessageDialog(this, "Username cannot contain ';' or be 'NA' or be empty", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                String password = "";
+                while (true) {
+                    password = JOptionPane.showInputDialog(this, "Enter a password:", "Create Account", JOptionPane.QUESTION_MESSAGE);
+                    if (!password.isEmpty()) {
+                        break;
+                    }
+                    JOptionPane.showMessageDialog(this, "Password cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 String profilePicture = JOptionPane.showInputDialog(this, "Enter a profile picture path:", "Create Account", JOptionPane.QUESTION_MESSAGE);
+                if (profilePicture.isEmpty()) {
+                    profilePicture = "default.jpg";
+                }
 
                 writer.println(username);
                 writer.println(password);
