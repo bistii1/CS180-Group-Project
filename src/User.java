@@ -118,10 +118,20 @@ public class User implements UserInterface, Serializable {
             tempBlockedUsers = blockedUsers.split(";");
         }
 
+        String[] userTempBlockedUsers = new String[0];
+        if (!user.getBlockedUsers().equals("NA")) {
+            userTempBlockedUsers = user.getBlockedUsers().split(";");
+        }
+        System.out.println(userTempBlockedUsers);
+
 
         // Check if user is blocked before adding as friend
         if (Arrays.asList(tempBlockedUsers).contains(user.getUsername())) {
-            return "This user has been blocked.";
+            return "You have this user blocked.";
+        }
+
+        if (Arrays.asList(userTempBlockedUsers).contains(this.getUsername())) {
+            return "This user has you blocked.";
         }
 
         if (friends.equals("NA")) {
@@ -153,15 +163,12 @@ public class User implements UserInterface, Serializable {
             tempFriends.remove(user.getUsername());
             if (tempFriends.isEmpty()) {
                 friends = "NA";
-                user.removeFriend(this);
             } else if (tempFriends.size() == 1) {
                 friends = tempFriends.get(0);
-                user.removeFriend(this);
             } else {
                 friends = String.join(";", tempFriends);
-                user.removeFriend(this);
             }
-            //user.getFriends().remove(this); // Remove this user from the friend's list
+            user.removeFriend(this);
         } else {
             System.out.println("This user is not in your friend list.");
         }
@@ -197,6 +204,8 @@ public class User implements UserInterface, Serializable {
                 } else {
                     friends = String.join(";", tempFriends);
                 }
+                removeFriend(user);
+                user.removeFriend(this);
                 return "Friend has been blocked.";
             }
             return "This user has been blocked.";
@@ -206,8 +215,9 @@ public class User implements UserInterface, Serializable {
     }
 
     public void unblockUser(User user) {
+        String[] temp;
+        ArrayList<String> tempFriends = new ArrayList<>();
 
-//        blockedUsers.remove(user);
     }
 
     // Profile Picture Methods
