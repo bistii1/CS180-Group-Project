@@ -214,7 +214,7 @@ public class User implements UserInterface, Serializable {
         }
     }
 
-    public void unblockUser(User user) {
+    public String unblockUser(User user) {
         String[] temp;
         ArrayList<String> tempFriends = new ArrayList<>();
 

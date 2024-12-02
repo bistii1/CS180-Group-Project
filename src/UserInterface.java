@@ -21,7 +21,7 @@ public interface UserInterface {
 
     // Blocked User Management
     String blockUser(User user);
-    void unblockUser(User user);
+    String unblockUser(User user);
 
     // Getters
     String getUsername();

@@ -15,7 +15,7 @@ public class Client extends JFrame implements ActionListener {
     // GUI Components
     private JPanel mainPanel;
     private JButton searchUsersButton, addFriendButton, messageFriendButton, blockButton, removeFriendButton,
-            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton;
+            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton, unblockButton;
 
     public Client() {
         // Connect to server
@@ -37,7 +37,7 @@ public class Client extends JFrame implements ActionListener {
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(4, 1));
+        mainPanel.setLayout(new GridLayout(2, 2));
 
         searchUsersButton = new JButton("Search All Users");
         addFriendButton = new JButton("Add Friend");
@@ -47,6 +47,7 @@ public class Client extends JFrame implements ActionListener {
         viewAllIncomingMessagesButton = new JButton("View All Incoming Messages");
         viewSentMessagesButton = new JButton("View Sent Messages");
         deleteMessagesButton = new JButton("Delete Messages");
+        unblockButton = new JButton("Unblock User");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
@@ -56,6 +57,7 @@ public class Client extends JFrame implements ActionListener {
         viewAllIncomingMessagesButton.addActionListener(this);
         viewSentMessagesButton.addActionListener(this);
         deleteMessagesButton.addActionListener(this);
+        unblockButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
@@ -65,6 +67,7 @@ public class Client extends JFrame implements ActionListener {
         mainPanel.add(viewAllIncomingMessagesButton);
         mainPanel.add(viewSentMessagesButton);
         mainPanel.add(deleteMessagesButton);
+        mainPanel.add(unblockButton);
 
         loginOrCreateAccount();
     }
@@ -186,6 +189,8 @@ public class Client extends JFrame implements ActionListener {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        } else if (e.getSource() == unblockButton) {
+            unblockUser();
         }
     }
 
@@ -354,6 +359,31 @@ public class Client extends JFrame implements ActionListener {
             if (condition) {
                 JOptionPane.showMessageDialog(null, "Refresh page to see change", "Message Deleted", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+
+    private void unblockUser() {
+        writer.println("Unblock user");
+        String unblockedUser = JOptionPane.showInputDialog(this, "Enter username to unblock: ", "Unblock User", JOptionPane.QUESTION_MESSAGE);
+        writer.println(thisUserName);
+        writer.println(unblockedUser);
+
+        String condition;
+        try {
+            condition = reader.readLine();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        if (condition.equals("null")) {
+            JOptionPane.showMessageDialog(this, "No user found", "Unblock User", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            try {
+                condition = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, condition, "Unblock User", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

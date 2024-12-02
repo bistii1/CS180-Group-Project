@@ -233,8 +233,6 @@ public class Server implements Runnable {
                         writer.println();
                         writer.flush();
                     }
-
-
                 }
                 else if (option.equals("Message")) {
                     database.loadDatabase(DATABASE_OBJECT);
@@ -345,7 +343,24 @@ public class Server implements Runnable {
                             writer.flush();
                         }
                     }
+                } else if (option.equals("Unblock user")) {
+                    database.loadDatabase(DATABASE_OBJECT);
+                    User user = database.findUser(reader.readLine());
 
+                    User unblocked = database.findUser(reader.readLine());
+                    if (unblocked != null) {
+                        writer.write("");
+                        writer.println();
+                        writer.flush();
+                        writer.write(user.blockUser(unblocked));
+                        writer.println();
+                        writer.flush();
+                        database.saveDatabase(DATABASE_OBJECT);
+                    } else {
+                        writer.write("null");
+                        writer.println();
+                        writer.flush();
+                    }
                 }
             }
             writer.close();
