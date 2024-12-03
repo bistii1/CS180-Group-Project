@@ -248,7 +248,7 @@ public class User implements UserInterface, Serializable {
             } else {
                 blockedUsers = String.join(";", tempBlocked);
             }
-            return "This user has been blocked";
+            return "This user has been unblocked";
         } else {
             return "This user was never blocked.";
         }
