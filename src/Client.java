@@ -14,9 +14,17 @@ public class Client extends JFrame implements ActionListener {
 
     // GUI Components
     private JPanel mainPanel;
-    private JButton searchUsersButton, addFriendButton, sendMessageButton, blockButton, removeFriendButton,
-            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton, unblockButton,
-            viewFriendMessagesButton, viewProfileButton;
+    private JButton searchUsersButton;
+    private JButton addFriendButton;
+    private JButton sendMessageButton;
+    private JButton blockButton;
+    private JButton removeFriendButton;
+    private JButton viewAllIncomingMessagesButton;
+    private JButton viewSentMessagesButton;
+    private JButton deleteMessagesButton;
+    private JButton unblockButton;
+    private final JButton viewFriendMessagesButton;
+    private JButton viewProfileButton;
 
     public Client() {
         // Connect to server
@@ -28,7 +36,8 @@ public class Client extends JFrame implements ActionListener {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Connection failed to server", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Connection failed to server", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
         //Database.loadDatabase("database.txt");
@@ -76,21 +85,82 @@ public class Client extends JFrame implements ActionListener {
         mainPanel.add(viewFriendMessagesButton);
         mainPanel.add(viewProfileButton);
 
-        loginOrCreateAccount();
+       loginOrCreateAccount();
     }
+
 
     private void loginOrCreateAccount() {
-        String[] options = {"Login", "Create Account"};
-        String choice = (String) JOptionPane.showInputDialog(
-                this, "Would you like to login or create a new account?",
-                "Login or Create Account", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        // Create a JDialog
+        JDialog dialog = new JDialog((Frame) null, "Login or Create Account", true);
+        dialog.setSize(400, 300);
+        dialog.setLayout(new BorderLayout());
 
-        if ("Login".equals(choice)) {
-            handleLogin();
-        } else if ("Create Account".equals(choice)) {
-            handleAccountCreation();
-        }
+        // Create a tabbed pane for Login and Create Account
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // Login Panel
+        JPanel loginPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        loginPanel.add(new JLabel("Username:"));
+        JTextField loginUsernameField = new JTextField();
+        loginPanel.add(loginUsernameField);
+        loginPanel.add(new JLabel("Password:"));
+        JPasswordField loginPasswordField = new JPasswordField();
+        loginPanel.add(loginPasswordField);
+
+        JButton loginButton = new JButton("Login");
+        loginPanel.add(loginButton);
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleLogin();
+                dialog.dispose();
+            }
+        });
+        tabbedPane.add("Login", loginPanel);
+
+        // Create Account Panel
+        JPanel createAccountPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        createAccountPanel.add(new JLabel("New Username:"));
+        JTextField createUsernameField = new JTextField();
+        createAccountPanel.add(createUsernameField);
+        createAccountPanel.add(new JLabel("New Password:"));
+        JPasswordField createPasswordField = new JPasswordField();
+        createAccountPanel.add(createPasswordField);
+        createAccountPanel.add(new JLabel("Confirm Password:"));
+        JPasswordField confirmPasswordField = new JPasswordField();
+        createAccountPanel.add(confirmPasswordField);
+
+        JButton createAccountButton = new JButton("Create Account");
+        createAccountPanel.add(createAccountButton);
+        createAccountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayMainMenu();
+                dialog.dispose();
+            }
+        });
+        tabbedPane.add("Create Account", createAccountPanel);
+
+        // Add tabbedPane to the dialog
+        dialog.add(tabbedPane, BorderLayout.CENTER);
+
+        // Add Cancel Button
+        JPanel buttonPanel = new JPanel();
+        JButton cancelButton = new JButton("Cancel");
+        buttonPanel.add(cancelButton);
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Show the dialog
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
+
 
     private void handleLogin() {
         try {
