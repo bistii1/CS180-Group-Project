@@ -15,7 +15,8 @@ public class Client extends JFrame implements ActionListener {
     // GUI Components
     private JPanel mainPanel;
     private JButton searchUsersButton, addFriendButton, sendMessageButton, blockButton, removeFriendButton,
-            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton, unblockButton, viewFriendMessagesButton;
+            viewAllIncomingMessagesButton, viewSentMessagesButton, deleteMessagesButton, unblockButton,
+            viewFriendMessagesButton, viewProfileButton;
 
     public Client() {
         // Connect to server
@@ -49,6 +50,7 @@ public class Client extends JFrame implements ActionListener {
         deleteMessagesButton = new JButton("Delete Messages");
         unblockButton = new JButton("Unblock User");
         viewFriendMessagesButton = new JButton("View Friend Messages");
+        viewProfileButton = new JButton("View Profile");
 
         searchUsersButton.addActionListener(this);
         addFriendButton.addActionListener(this);
@@ -60,6 +62,7 @@ public class Client extends JFrame implements ActionListener {
         deleteMessagesButton.addActionListener(this);
         unblockButton.addActionListener(this);
         viewFriendMessagesButton.addActionListener(this);
+        viewProfileButton.addActionListener(this);
 
         mainPanel.add(searchUsersButton);
         mainPanel.add(addFriendButton);
@@ -71,6 +74,7 @@ public class Client extends JFrame implements ActionListener {
         mainPanel.add(deleteMessagesButton);
         mainPanel.add(unblockButton);
         mainPanel.add(viewFriendMessagesButton);
+        mainPanel.add(viewProfileButton);
 
         loginOrCreateAccount();
     }
@@ -222,6 +226,8 @@ public class Client extends JFrame implements ActionListener {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        } else if (e.getSource() == viewProfileButton) {
+            viewProfile();
         }
     }
 
@@ -444,6 +450,44 @@ public class Client extends JFrame implements ActionListener {
         String message = "";
         while (!((message = reader.readLine()).equals("END"))) {
             messageFrame.addMessage(message);
+        }
+    }
+
+    private void viewProfile() {
+        writer.println("View Profile");
+        String friend = JOptionPane.showInputDialog(this, "Enter username to view:", "View profile", JOptionPane.QUESTION_MESSAGE);
+        writer.println(thisUserName);
+        writer.println(friend);
+        String condition;
+        try {
+            condition = reader.readLine();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        if (condition.equals("null")) {
+            JOptionPane.showMessageDialog(this, "No user found", "View profile", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            String profilePicture;
+            try {
+                profilePicture = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            String description;
+            try {
+                description = reader.readLine();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            JLabel label = new JLabel();
+            if (profilePicture != null && !profilePicture.trim().isEmpty()) {
+                ImageIcon icon = new ImageIcon(profilePicture);
+                Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                label.setIcon(new ImageIcon(scaledImage));
+            }
+            label.setText("<html><center>" + description + "</center></html>");
+            label.setHorizontalTextPosition(SwingConstants.CENTER);
+            label.setVerticalTextPosition(SwingConstants.BOTTOM);
         }
     }
 

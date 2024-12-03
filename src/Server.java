@@ -387,6 +387,42 @@ public class Server implements Runnable {
                     writer.write("END");
                     writer.println();
                     writer.flush();
+                } else if (option.equals("View Profile")) {
+                    database.loadDatabase(DATABASE_OBJECT);
+                    User searcher = database.findUser(reader.readLine());
+                    User profile = database.findUser(reader.readLine());
+                    if (profile == null) {
+                        writer.write("null");
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        writer.write("");
+                        writer.println();
+                        writer.flush();
+                        if (searcher.friendsWith(profile)) {
+                            writer.write(profile.getUsername());
+                            writer.println();
+                            writer.flush();
+                            writer.write(profile.getUsername() + ": You are friends with this user");
+                            writer.println();
+                            writer.flush();
+                        } else if (searcher.blocked(profile)) {
+                            writer.write(profile.getUsername());
+                            writer.println();
+                            writer.flush();
+                            writer.write(profile.getUsername() + ": You are blocked with this user");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write(profile.getUsername());
+                            writer.println();
+                            writer.flush();
+                            writer.write(profile.getUsername());
+                            writer.println();
+                            writer.flush();
+                        }
+                    }
+                    database.saveDatabase(DATABASE_OBJECT);
                 }
             }
             writer.close();

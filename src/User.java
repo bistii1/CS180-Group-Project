@@ -257,8 +257,8 @@ public class User implements UserInterface, Serializable {
 
     // Profile Picture Methods
 
-    // Method to load profile picture into a JLabel. Would be used in Phase 3 with more edits
-
+//     Method to load profile picture into a JLabel. Would be used in Phase 3 with more edits
+//
 //    public JLabel loadProfilePicture() {
 //        JLabel label = new JLabel();
 //        if (profilePicture != null) {
