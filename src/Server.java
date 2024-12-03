@@ -419,7 +419,7 @@ public class Server implements Runnable {
                             writer.write(profile.getProfilePicture());
                             writer.println();
                             writer.flush();
-                            writer.write(profile.getUsername());
+                            writer.write(profile.getUsername() + ": You have no relation with this user");
                             System.out.println(profile.getUsername());
                             writer.println();
                             writer.flush();
