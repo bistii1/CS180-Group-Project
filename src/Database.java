@@ -118,8 +118,10 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
 
         } catch (EOFException e) {
             System.out.println("Database has no users");
+            Database.users = new ArrayList<>();
         } catch (FileNotFoundException e) {
             System.out.println("Database file not found! Returning a new empty database.");
+            Database.users = new ArrayList<>();
         } catch (ClassNotFoundException | IOException e) {
             System.out.println("Error loading database");
             e.printStackTrace();
