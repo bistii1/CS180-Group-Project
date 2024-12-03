@@ -107,6 +107,10 @@ public class User implements UserInterface, Serializable {
 
     // Friend Methods
     public String addFriend(User user) {
+        if (this.equals(user)) {
+            return "You cannot add yourself";
+        }
+
         // Read current friends if any
         String[] tempFriends = new String[0];
         if (!friends.equals("NA")) {
@@ -149,6 +153,10 @@ public class User implements UserInterface, Serializable {
     }
 
     public String removeFriend(User user) {
+        if (this.equals(user)) {
+            return "You cannot remove yourself";
+        }
+
         // Read current users
         String[] temp;
         ArrayList<String> tempFriends = new ArrayList<>();
@@ -176,6 +184,10 @@ public class User implements UserInterface, Serializable {
     }
 
     public String blockUser(User user) {
+        if (this.equals(user)) {
+            return "You cannot block yourself";
+        }
+
         String[] tempF;
         ArrayList<String> tempFriends = new ArrayList<>();
         if (!friends.equals("NA")) {
@@ -216,6 +228,10 @@ public class User implements UserInterface, Serializable {
     }
 
     public String unblockUser(User user) {
+        if (this.equals(user)) {
+            return "You cannot unblock yourself";
+        }
+
         String[] tempB;
         ArrayList<String> tempBlocked = new ArrayList<>();
         if (!blockedUsers.equals("NA")) {
