@@ -400,29 +400,31 @@ public class Server implements Runnable {
                         writer.println();
                         writer.flush();
                         if (searcher.friendsWith(profile)) {
-                            writer.write(profile.getUsername());
+                            writer.write(profile.getProfilePicture());
                             writer.println();
                             writer.flush();
                             writer.write(profile.getUsername() + ": You are friends with this user");
+                            System.out.println(profile.getUsername() + ": You are friends with this user");
                             writer.println();
                             writer.flush();
                         } else if (searcher.blocked(profile)) {
-                            writer.write(profile.getUsername());
+                            writer.write(profile.getProfilePicture());
                             writer.println();
                             writer.flush();
                             writer.write(profile.getUsername() + ": You are blocked with this user");
+                            System.out.println(profile.getUsername() + ": You are blocked with this user");
                             writer.println();
                             writer.flush();
                         } else {
-                            writer.write(profile.getUsername());
+                            writer.write(profile.getProfilePicture());
                             writer.println();
                             writer.flush();
                             writer.write(profile.getUsername());
+                            System.out.println(profile.getUsername());
                             writer.println();
                             writer.flush();
                         }
                     }
-                    database.saveDatabase(DATABASE_OBJECT);
                 }
             }
             writer.close();

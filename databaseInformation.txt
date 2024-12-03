@@ -1,4 +1,4 @@
-yatharth,jain,j.jpg,NA,NA,[]
+yatharth,jain,j.jpg,NA,bisti,[]
 bisti,potdar,default.jpg,NA,NA,[]
 neel,sharma,s.jpg,NA,NA,[]
 anu,mittal,default.jpg,NA,NA,[]

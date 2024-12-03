@@ -480,14 +480,15 @@ public class Client extends JFrame implements ActionListener {
                 throw new RuntimeException(ex);
             }
             JLabel label = new JLabel();
-            if (profilePicture != null && !profilePicture.trim().isEmpty()) {
-                ImageIcon icon = new ImageIcon(profilePicture);
-                Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-                label.setIcon(new ImageIcon(scaledImage));
-            }
+            ImageIcon icon = new ImageIcon(profilePicture);
+            Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            label.setIcon(new ImageIcon(scaledImage));
+
             label.setText("<html><center>" + description + "</center></html>");
             label.setHorizontalTextPosition(SwingConstants.CENTER);
             label.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+            JOptionPane.showMessageDialog(this, label, "View profile: " + friend, JOptionPane.PLAIN_MESSAGE);
         }
     }
 
