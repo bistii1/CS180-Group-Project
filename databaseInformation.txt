@@ -1,2 +1,6 @@
-bisti,b,Lmao,,,[]
-bisti,b,Lmao
+yatharth,jain,j.jpg,NA,NA,[]
+bisti,potdar,default.jpg,NA,NA,[]
+neel,sharma,s.jpg,NA,NA,[]
+anu,mittal,default.jpg,NA,NA,[]
+kfj r,ekjr,helloo,NA,NA,[]
+hii,hii,iiii,NA,NA,[]

@@ -15,7 +15,9 @@ public interface DatabaseInterface {
 
     User findUser(String username);
     void viewUsers();
+
     void saveDatabase(String filename) throws IOException;
+
     boolean addUser(User user);
 
     static DatabaseInterface loadDatabase(String filename) throws IOException {

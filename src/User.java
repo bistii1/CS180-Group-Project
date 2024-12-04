@@ -1,5 +1,6 @@
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -22,13 +23,13 @@ public class User implements UserInterface, Serializable {
     private String username;
     private String password;
     private String profilePicture;
-    private ArrayList<User> friends;
-    private ArrayList<User> blockedUsers;
+    private String friends;
+    private String blockedUsers;
     private ArrayList<Message> messageHistory;
 
     // Constructor
-    public User(String username, String password, String profilePicture, ArrayList<User> friends,
-                ArrayList<User> blockedUsers, ArrayList<Message> messageHistory) {
+    public User(String username, String password, String profilePicture, String friends,
+                String blockedUsers, ArrayList<Message> messageHistory) {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
@@ -38,7 +39,7 @@ public class User implements UserInterface, Serializable {
         //users.add(this);
     }
 
-    public User(String username, String password, String profilePicture) {
+    /*public User(String username, String password, String profilePicture) {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
@@ -46,7 +47,7 @@ public class User implements UserInterface, Serializable {
         this.blockedUsers = new ArrayList<>();
         this.messageHistory = new ArrayList<>();
         //users.add(this);
-    }
+    }*/
 
     // Profile Management
     public void updateProfile(String newUsername, String newPassword, String newProfilePicture) {
@@ -91,24 +92,12 @@ public class User implements UserInterface, Serializable {
 //        this.profilePicture = profilePicturePath;
 //    }
 
-    public ArrayList<User> getFriends() {
-
-        if (friends == null) {
-            friends = new ArrayList<User>();
-        }
-        else {
-            return friends;
-        }
-
-
-        return null;
+    public String getFriends() {
+        return friends;
     }
 
-    public String getFriendsString() {
-        return Arrays.toString(friends.toArray());
-    }
 
-    public ArrayList<User> getBlockedUsers() {
+    public String getBlockedUsers() {
         return blockedUsers;
     }
 
@@ -117,54 +106,175 @@ public class User implements UserInterface, Serializable {
     }
 
     // Friend Methods
-    public void addFriend(User user) {
+    public String addFriend(User user) {
+        if (this.equals(user)) {
+            return "You cannot add yourself";
+        }
+
+        // Read current friends if any
+        String[] tempFriends = new String[0];
+        if (!friends.equals("NA")) {
+            tempFriends = friends.split(";");
+        }
+
+        String[] tempBlockedUsers = new String[0];
+        if (!blockedUsers.equals("NA")) {
+            tempBlockedUsers = blockedUsers.split(";");
+        }
+
+        String[] userTempBlockedUsers = new String[0];
+        if (!user.getBlockedUsers().equals("NA")) {
+            userTempBlockedUsers = user.getBlockedUsers().split(";");
+        }
+        System.out.println(userTempBlockedUsers);
+
+
         // Check if user is blocked before adding as friend
-        if (blockedUsers.contains(user)) {
-            System.out.println("This user has been blocked.");
-            return;
+        if (Arrays.asList(tempBlockedUsers).contains(user.getUsername())) {
+            return "You have this user blocked.";
         }
 
-        if (!friends.contains(user)) {
-            friends.add(user);
-            //user.addFriend(this);
-            //user.getFriends().add(this); // Add this user to friend's list
+        if (Arrays.asList(userTempBlockedUsers).contains(this.getUsername())) {
+            return "This user has you blocked.";
         }
-    }
 
-    public void removeFriend(User user) {
-        // Check if user is present in friend's list before removing as friend
-        if (friends.contains(user)) {
-            friends.remove(user);
-            user.getFriends().remove(this); // Remove this user from the friend's list
+        if (friends.equals("NA")) {
+            friends = user.getUsername();
+            user.addFriend(this);
         } else {
-            System.out.println("This user is not in your friend list.");
-        }
-    }
-
-    public void blockUser(User user) {
-        // Check if user is not present in block list before blocking
-        if (!blockedUsers.contains(user)) {
-            blockedUsers.add(user);
-            System.out.println("This user has been blocked.");
-
-            if(friends.contains(user)) {
-                friends.remove(user); // Remove from friends if they're in the friend list
-                System.out.println("Friend has been blocked.");
+            if (Arrays.asList(tempFriends).contains(user.getUsername())) {
+                return "This user already has " + user.getUsername() + " added as a friend.";
+            } else {
+                friends += ";" + user.getUsername();
+                user.addFriend(this);
             }
+        }
+        return "Added " + user.getUsername() + " as a friend!";
+    }
+
+    public String removeFriend(User user) {
+        if (this.equals(user)) {
+            return "You cannot remove yourself";
+        }
+
+        // Read current users
+        String[] temp;
+        ArrayList<String> tempFriends = new ArrayList<>();
+        if (!friends.equals("NA")) {
+            temp = friends.split(";");
+            tempFriends = new ArrayList<>(Arrays.asList(temp));
+        }
+
+
+        // Check if user is present in friend's list before removing as friend
+        if (tempFriends.contains(user.getUsername())) {
+            tempFriends.remove(user.getUsername());
+            if (tempFriends.isEmpty()) {
+                friends = "NA";
+            } else if (tempFriends.size() == 1) {
+                friends = tempFriends.get(0);
+            } else {
+                friends = String.join(";", tempFriends);
+            }
+            user.removeFriend(this);
+            return "Friend has been removed.";
         } else {
-            System.out.println("This user has already been blocked.");
+            return "This user is not in your friend list.";
         }
     }
 
-    public void unblockUser(User user) {
+    public String blockUser(User user) {
+        if (this.equals(user)) {
+            return "You cannot block yourself";
+        }
 
-        blockedUsers.remove(user);
+        String[] tempF;
+        ArrayList<String> tempFriends = new ArrayList<>();
+        if (!friends.equals("NA")) {
+            tempF = friends.split(";");
+            tempFriends = new ArrayList<>(Arrays.asList(tempF));
+        }
+
+        String[] tempB;
+        ArrayList<String> tempBlocked = new ArrayList<>();
+        if (!blockedUsers.equals("NA")) {
+            tempB = blockedUsers.split(";");
+            tempBlocked = new ArrayList<>(Arrays.asList(tempB));
+        }
+
+
+        // Check if user is not present in block list before blocking
+        if (!tempBlocked.contains(user.getUsername())) {
+            tempBlocked.add(user.getUsername());
+            blockedUsers = String.join(";", tempBlocked);
+
+            if (tempFriends.contains(user.getUsername())) {
+                tempFriends.remove(user.getUsername()); // Remove from friends if they're in the friend list
+                if (tempFriends.isEmpty()) {
+                    friends = "NA";
+                } else if (tempFriends.size() == 1) {
+                    friends = tempFriends.get(0);
+                } else {
+                    friends = String.join(";", tempFriends);
+                }
+                removeFriend(user);
+                user.removeFriend(this);
+                return "Friend has been blocked.";
+            }
+            return "This user has been blocked.";
+        } else {
+            return "This user has already been blocked.";
+        }
+    }
+
+    public String unblockUser(User user) {
+        if (this.equals(user)) {
+            return "You cannot unblock yourself";
+        }
+
+        String[] tempB;
+        ArrayList<String> tempBlocked = new ArrayList<>();
+        if (!blockedUsers.equals("NA")) {
+            tempB = blockedUsers.split(";");
+            tempBlocked = new ArrayList<>(Arrays.asList(tempB));
+        }
+
+        if (tempBlocked.contains(user.getUsername())) {
+            tempBlocked.remove(user.getUsername());
+            if (tempBlocked.isEmpty()) {
+                blockedUsers = "NA";
+            } else if (tempBlocked.size() == 1) {
+                blockedUsers = tempBlocked.get(0);
+            } else {
+                blockedUsers = String.join(";", tempBlocked);
+            }
+            return "This user has been unblocked";
+        } else {
+            return "This user was never blocked.";
+        }
+    }
+
+    public boolean friendsWith(User user) {
+        String[] tempF;
+        ArrayList<String> tempFriends = new ArrayList<>();
+        if (!friends.equals("NA")) {
+            tempF = friends.split(";");
+            tempFriends = new ArrayList<>(Arrays.asList(tempF));
+        } else {
+            return false;
+        }
+
+        if (tempFriends.contains(user.getUsername())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Profile Picture Methods
 
-    // Method to load profile picture into a JLabel. Would be used in Phase 3 with more edits
-
+//     Method to load profile picture into a JLabel. Would be used in Phase 3 with more edits
+//
 //    public JLabel loadProfilePicture() {
 //        JLabel label = new JLabel();
 //        if (profilePicture != null) {
@@ -178,34 +288,80 @@ public class User implements UserInterface, Serializable {
 //    }
 //  }
 
-    public String getFriendUsernames() {
-        String result = "";
-        // goes through arraylist of friend objects and concatonates a string with the usernames of the friends
-        for (User friend : friends) {
-            result += friend.getUsername() + ";";
+//    public String getFriendUsernames() {
+//        String result = "";
+//        // goes through arraylist of friend objects and concatonates a string with the usernames of the friends
+////        for (User friend : friends) {
+////            result += friend.getUsername() + ";";
+////        }
+//        return result;
+//    }
+//
+//    public String getBlockedUsernames() {
+//        // get blocked usernames
+//        String result = "";
+//       // for (User friend : blockedUsers) {
+//           // result += friend.getUsername() + " ";
+//       // }
+//        return result;
+//    }
+
+    /*public void sendMessageAll(String content) {
+        Database tempDatabase = new Database();
+        tempDatabase.viewUsers();
+        ArrayList<User> friendUsernamesArrayList = new ArrayList<>();
+        String[] friendUsernames = new String[0];
+        if (!friends.equals("NA")) {
+            friendUsernames = friends.split(";");
+            System.out.println(friends);
+            System.out.println("------ " + Arrays.toString(friendUsernames));
+            for (String username : friendUsernames) {
+                System.out.println("++ " + username);
+                System.out.println("-- " + tempDatabase.findUser(username).toString());
+                friendUsernamesArrayList.add(tempDatabase.findUser(username));
+            }
+            System.out.println("***** " + friendUsernamesArrayList);
+            for (User friend : friendUsernamesArrayList) {
+                sendMessage(friend, content);
+            }
         }
-        return result;
+    }*/
+
+    public boolean blocked(User user) {
+        String[] tempB;
+        ArrayList<String> tempBlocked = new ArrayList<>();
+        if (!blockedUsers.equals("NA")) {
+            tempB = blockedUsers.split(";");
+            tempBlocked = new ArrayList<>(Arrays.asList(tempB));
+        }
+
+        if (tempBlocked.contains(user.getUsername())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public String getBlockedUsernames() {
-        // get blocked usernames
-        String result = "";
-        for (User friend : blockedUsers) {
-            result += friend.getUsername() + " ";
+    public String sendMessage(User recipient, String content) {
+        if (this.blocked(recipient)) {
+            return "You have this user blocked";
+        } else if (recipient.blocked(this)) {
+            return "This user has you blocked";
+        } else {
+            Message message = new Message(this, recipient, content);
+            recipient.messageHistory.add(message);
+            this.messageHistory.add(message);
+            return "Message sent!";
         }
-        return result;
+//        System.out.println(recipient.messageHistory);
+//        System.out.println(recipient);
+//        for (User user : Database.users) {
+//            System.out.println(user);
+//        }
     }
 
-    public void sendMessageAll(String content) {
-        for (User friend : friends) {
-            sendMessage(friend, content);
-        }
-    }
-
-    public void sendMessage(User recipient, String content) {
-        Message message = new Message(this, recipient, content);
-        recipient.messageHistory.add(message);
-        System.out.println(recipient.messageHistory);
+    public void deleteMessage(Message message) {
+        this.messageHistory.remove(message);
     }
 
 //    public String getMessage() {
@@ -216,7 +372,7 @@ public class User implements UserInterface, Serializable {
 ////    }
 
     public String toString(){
-        return getUsername() + "," + getPassword() + "," + getProfilePicture() + "," + getFriendUsernames() + "," + getBlockedUsernames() +
+        return getUsername() + "," + getPassword() + "," + getProfilePicture() + "," + friends + "," + blockedUsers +
                 "," + messageHistory;
     }
 }

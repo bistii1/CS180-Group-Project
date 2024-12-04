@@ -16,25 +16,25 @@ public interface UserInterface {
     void updateProfile(String newUsername, String newPassword, String newProfilePicture);
 
     // Friend Management
-    void addFriend(User user);
-    void removeFriend(User user);
+    String addFriend(User user);
+    String removeFriend(User user);
 
     // Blocked User Management
-    void blockUser(User user);
-    void unblockUser(User user);
+    String blockUser(User user);
+    String unblockUser(User user);
 
     // Getters
     String getUsername();
     String getPassword();
     String getProfilePicture();
-    ArrayList<User> getFriends();
+    String getFriends();
 
     // It is static since it is not specific to an instance variable
     static ArrayList<User> getUsers() {
         return new ArrayList<>();   // returns an empty user ArrayList
     }
 
-    ArrayList<User> getBlockedUsers();
+    String getBlockedUsers();
     ArrayList<Message> getMessageHistory();
 
     // Setters
