@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 import java.net.Socket;
+import java.util.Arrays;
 
 public class Client extends JFrame implements ActionListener {
     private Socket socket;
@@ -23,7 +24,7 @@ public class Client extends JFrame implements ActionListener {
     private JButton viewSentMessagesButton;
     private JButton deleteMessagesButton;
     private JButton unblockButton;
-    private final JButton viewFriendMessagesButton;
+    private JButton viewFriendMessagesButton;
     private JButton viewProfileButton;
 
     public Client() {
@@ -46,44 +47,6 @@ public class Client extends JFrame implements ActionListener {
         setTitle("User Management System");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(2, 2));
-
-        searchUsersButton = new JButton("Search All Users");
-        addFriendButton = new JButton("Add Friend");
-        sendMessageButton = new JButton("Send Message");
-        blockButton = new JButton("Block User");
-        removeFriendButton = new JButton("Remove Friend");
-        viewAllIncomingMessagesButton = new JButton("View All Incoming Messages");
-        viewSentMessagesButton = new JButton("View Sent Messages");
-        deleteMessagesButton = new JButton("Delete Messages");
-        unblockButton = new JButton("Unblock User");
-        viewFriendMessagesButton = new JButton("View Friend Messages");
-        viewProfileButton = new JButton("View Profile");
-
-        searchUsersButton.addActionListener(this);
-        addFriendButton.addActionListener(this);
-        sendMessageButton.addActionListener(this);
-        blockButton.addActionListener(this);
-        removeFriendButton.addActionListener(this);
-        viewAllIncomingMessagesButton.addActionListener(this);
-        viewSentMessagesButton.addActionListener(this);
-        deleteMessagesButton.addActionListener(this);
-        unblockButton.addActionListener(this);
-        viewFriendMessagesButton.addActionListener(this);
-        viewProfileButton.addActionListener(this);
-
-        mainPanel.add(searchUsersButton);
-        mainPanel.add(addFriendButton);
-        mainPanel.add(sendMessageButton);
-        mainPanel.add(blockButton);
-        mainPanel.add(removeFriendButton);
-        mainPanel.add(viewAllIncomingMessagesButton);
-        mainPanel.add(viewSentMessagesButton);
-        mainPanel.add(deleteMessagesButton);
-        mainPanel.add(unblockButton);
-        mainPanel.add(viewFriendMessagesButton);
-        mainPanel.add(viewProfileButton);
 
         // Initialize GUI
         setTitle("User Management System");
@@ -289,13 +252,65 @@ public class Client extends JFrame implements ActionListener {
     }*/
 
     private void displayMainMenu() {
+        // Main container and tabbed pane
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // Messages Feed Tab
+        JPanel messageFeedPanel = new JPanel(new BorderLayout());
+        JTextArea messageFeedArea = new JTextArea();
+        messageFeedArea.setEditable(false); // Make it read-only
+
+//        // Populate the message feed
+//        List<String> messages = getMessagesForLoggedInUser();
+//        for (String message : messages) {
+//            messageFeedArea.append(message + "\n");
+//        }
+
+        JScrollPane scrollPane = new JScrollPane(messageFeedArea); // Scrollable feed
+        messageFeedPanel.add(scrollPane, BorderLayout.CENTER);
+        tabbedPane.addTab("Message Feed", messageFeedPanel);
+
+        // Menu Tab
+        JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS)); // Vertical stacking
+
+        // Buttons for menu
+        String[] buttonLabels = {
+                "Search All Users", "Add Friend", "Send Message", "Block User",
+                "Remove Friend", "View All Incoming Messages", "View Sent Messages",
+                "Delete Messages", "Unblock User", "View Friend Messages", "View Profile"
+        };
+
+        JButton[] buttons = new JButton[buttonLabels.length];
+
+        for (int i = 0; i < buttonLabels.length; i++) {
+            buttons[i] = new JButton(buttonLabels[i]);
+            buttons[i].addActionListener(this);
+            buttons[i].setAlignmentX(Component.CENTER_ALIGNMENT); // Center align
+            buttons[i].setMaximumSize(new Dimension(200, 30)); // Limit button size
+            buttons[i].setPreferredSize(new Dimension(200, 30));
+            menuPanel.add(Box.createVerticalStrut(10)); // Add spacing
+            menuPanel.add(buttons[i]);
+        }
+
+        // Add some padding around the menu panel
+        JPanel paddedMenuPanel = new JPanel(new BorderLayout());
+        paddedMenuPanel.add(menuPanel, BorderLayout.CENTER);
+        paddedMenuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding
+
+        tabbedPane.addTab("Menu", paddedMenuPanel);
+
+        // Add the tabbed pane to the frame
         Container content = this.getContentPane();
         content.setLayout(new BorderLayout());
-        content.add(mainPanel, BorderLayout.CENTER);
+        content.add(tabbedPane, BorderLayout.CENTER);
+
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
