@@ -14,7 +14,7 @@ public class Client extends JFrame implements ActionListener {
     private String thisUserName;
 
     // GUI Components
-    private JPanel mainPanel;
+    private JPanel menuPanel;
     private JButton searchUsersButton;
     private JButton addFriendButton;
     private JButton sendMessageButton;
@@ -59,7 +59,7 @@ public class Client extends JFrame implements ActionListener {
 
     private void showHomeScreen() {
         // Create a panel for the home screen
-        JPanel homePanel = new JPanel(new GridLayout(3, 1,0,20));
+        JPanel homePanel = new JPanel(new GridLayout(3, 1,0,30));
         JPanel emptyPanel = new JPanel();
         emptyPanel.setBackground(new Color(140, 211, 255));
         emptyPanel.setPreferredSize(new Dimension(0, 500));
@@ -83,7 +83,7 @@ public class Client extends JFrame implements ActionListener {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(proceedButton);
-        buttonPanel.setBackground(new Color(140, 211, 255));
+        buttonPanel.setBackground(new Color(10, 78, 122));
         homePanel.add(buttonPanel);
 
         // Display the home screen
@@ -118,10 +118,11 @@ public class Client extends JFrame implements ActionListener {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleLogin();
+                handleLogin(loginUsernameField.getText(), loginPasswordField.getText());
                 dialog.dispose();
             }
         });
+
         tabbedPane.add("Login", loginPanel);
 
         // Create Account Panel
@@ -141,6 +142,7 @@ public class Client extends JFrame implements ActionListener {
         createAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                handleAccountCreation(createUsernameField.getText(),createPasswordField.getText());
                 displayMainMenu();
                 dialog.dispose();
             }
@@ -168,15 +170,12 @@ public class Client extends JFrame implements ActionListener {
     }
 
 
-    private void handleLogin() {
+    private void handleLogin(String username, String password) {
         try {
-            writer.println("Login");
+          writer.println("Login");
             boolean loggedIn = false;
 
             while (!loggedIn) {
-                String username = JOptionPane.showInputDialog(this, "Enter your username:", "Login", JOptionPane.QUESTION_MESSAGE);
-                String password = JOptionPane.showInputDialog(this, "Enter your password:", "Login", JOptionPane.QUESTION_MESSAGE);
-
                 writer.println(username);
                 writer.println(password);
 
@@ -194,29 +193,13 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
-    private void handleAccountCreation() {
+    private void handleAccountCreation(String username, String password) {
         try {
             writer.println("Create account");
             boolean created = false;
 
             while (!created) {
 
-                String username = "";
-                while (true) {
-                    username = JOptionPane.showInputDialog(this, "Enter a username:", "Create Account", JOptionPane.QUESTION_MESSAGE);
-                    if (!username.contains(";") && !username.equals("NA") && !username.isEmpty()) {
-                        break;
-                    }
-                    JOptionPane.showMessageDialog(this, "Username cannot contain ';' or be 'NA' or be empty", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                String password = "";
-                while (true) {
-                    password = JOptionPane.showInputDialog(this, "Enter a password:", "Create Account", JOptionPane.QUESTION_MESSAGE);
-                    if (!password.isEmpty()) {
-                        break;
-                    }
-                    JOptionPane.showMessageDialog(this, "Password cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
-                }
                 String profilePicture = JOptionPane.showInputDialog(this, "Enter a profile picture path:", "Create Account", JOptionPane.QUESTION_MESSAGE);
                 if (profilePicture.isEmpty()) {
                     profilePicture = "default.jpg";
@@ -274,24 +257,7 @@ public class Client extends JFrame implements ActionListener {
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS)); // Vertical stacking
 
-        // Buttons for menu
-        String[] buttonLabels = {
-                "Search All Users", "Add Friend", "Send Message", "Block User",
-                "Remove Friend", "View All Incoming Messages", "View Sent Messages",
-                "Delete Messages", "Unblock User", "View Friend Messages", "View Profile"
-        };
 
-        JButton[] buttons = new JButton[buttonLabels.length];
-
-        for (int i = 0; i < buttonLabels.length; i++) {
-            buttons[i] = new JButton(buttonLabels[i]);
-            buttons[i].addActionListener(this);
-            buttons[i].setAlignmentX(Component.CENTER_ALIGNMENT); // Center align
-            buttons[i].setMaximumSize(new Dimension(200, 30)); // Limit button size
-            buttons[i].setPreferredSize(new Dimension(200, 30));
-            menuPanel.add(Box.createVerticalStrut(10)); // Add spacing
-            menuPanel.add(buttons[i]);
-        }
 
         // Add some padding around the menu panel
         JPanel paddedMenuPanel = new JPanel(new BorderLayout());
@@ -299,6 +265,42 @@ public class Client extends JFrame implements ActionListener {
         paddedMenuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding
 
         tabbedPane.addTab("Menu", paddedMenuPanel);
+
+        searchUsersButton = new JButton("Search All Users");
+        addFriendButton = new JButton("Add Friend");
+        sendMessageButton = new JButton("Send Message");
+        blockButton = new JButton("Block User");
+        removeFriendButton = new JButton("Remove Friend");
+        viewAllIncomingMessagesButton = new JButton("View All Incoming Messages");
+        viewSentMessagesButton = new JButton("View Sent Messages");
+        deleteMessagesButton = new JButton("Delete Messages");
+        unblockButton = new JButton("Unblock User");
+        viewFriendMessagesButton = new JButton("View Friend Messages");
+        viewProfileButton = new JButton("View Profile");
+
+        searchUsersButton.addActionListener(this);
+        addFriendButton.addActionListener(this);
+        sendMessageButton.addActionListener(this);
+        blockButton.addActionListener(this);
+        removeFriendButton.addActionListener(this);
+        viewAllIncomingMessagesButton.addActionListener(this);
+        viewSentMessagesButton.addActionListener(this);
+        deleteMessagesButton.addActionListener(this);
+        unblockButton.addActionListener(this);
+        viewFriendMessagesButton.addActionListener(this);
+        viewProfileButton.addActionListener(this);
+
+        menuPanel.add(searchUsersButton);
+        menuPanel.add(addFriendButton);
+        menuPanel.add(sendMessageButton);
+        menuPanel.add(blockButton);
+        menuPanel.add(removeFriendButton);
+        menuPanel.add(viewAllIncomingMessagesButton);
+        menuPanel.add(viewSentMessagesButton);
+        menuPanel.add(deleteMessagesButton);
+        menuPanel.add(unblockButton);
+        menuPanel.add(viewFriendMessagesButton);
+        menuPanel.add(viewProfileButton);
 
         // Add the tabbed pane to the frame
         Container content = this.getContentPane();
