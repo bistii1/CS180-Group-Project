@@ -85,8 +85,51 @@ public class Client extends JFrame implements ActionListener {
         mainPanel.add(viewFriendMessagesButton);
         mainPanel.add(viewProfileButton);
 
-       loginOrCreateAccount();
+        // Initialize GUI
+        setTitle("User Management System");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Show home screen
+        showHomeScreen();
     }
+
+    private void showHomeScreen() {
+        // Create a panel for the home screen
+        JPanel homePanel = new JPanel(new GridLayout(3, 1,0,20));
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setBackground(new Color(140, 211, 255));
+        emptyPanel.setPreferredSize(new Dimension(0, 500));
+        homePanel.add(emptyPanel);
+        homePanel.setBackground(new Color(140, 211, 255));
+
+        // Add welcome message
+        JLabel welcomeLabel = new JLabel("Welcome to friendDMer!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Calibri", Font.BOLD, 39));
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        homePanel.add(welcomeLabel);
+
+
+        // Add a proceed button
+        JButton proceedButton = new JButton("Proceed to Login");
+        proceedButton.setFont(new Font("Calibri", Font.PLAIN, 16));
+        proceedButton.addActionListener(e -> {
+            getContentPane().remove(homePanel);
+            loginOrCreateAccount();
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(proceedButton);
+        buttonPanel.setBackground(new Color(140, 211, 255));
+        homePanel.add(buttonPanel);
+
+        // Display the home screen
+        getContentPane().add(homePanel);
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+    }
+
 
 
     private void loginOrCreateAccount() {
