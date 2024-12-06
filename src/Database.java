@@ -19,7 +19,6 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
     private static final long serialVersionUID = 1L; // for serializable
     private final String FILENAME = "database.txt";
     private final String INFORMATION_FILE = "databaseInformation.txt";
-//    private static final String PROFILEPICTURE_FOLDER = "profilePictures/";
 
     public Database() {
         users = new ArrayList<>(); // initializes new database object

@@ -13,7 +13,6 @@ public class Message implements Serializable {
         this.content = content;
     }
 
-
     public User getSender() {
         return sender;
     }
