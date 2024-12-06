@@ -372,7 +372,7 @@ public class User implements UserInterface, Serializable {
 ////    }
 
     public String toString(){
-        return getUsername() + "," + getPassword() + "," + getProfilePicture() + "," + friends + "," + blockedUsers +
-                "," + messageHistory;
+        return getUsername() + "," + getPassword() + "," + getProfilePicture() + "," + getFriends() + "," + getBlockedUsers() +
+                "," + getMessageHistory();
     }
 }

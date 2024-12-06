@@ -7,11 +7,11 @@ public class Message implements Serializable {
     private String content;
 
     public Message (User sender, User recipient, String content) {
+
         this.sender = sender;
         this.recipient = recipient;
         this.content = content;
     }
-
 
 
     public User getSender() {
