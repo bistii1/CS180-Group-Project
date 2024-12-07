@@ -131,197 +131,167 @@ public class Server implements Runnable {
 
 
             while (socket.isConnected()) {
-                String option = reader.readLine();
-                System.out.println(option);
-                if (option.equals("Login")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    boolean loggedIn = false;
-                    while (!loggedIn) {
-                        String username = reader.readLine();
-                        String password = reader.readLine();
-                        User thisUser = login(username, password);
-                        if (thisUser != null) {
-                            writer.write(thisUser.getUsername());
-                            writer.println();
-                            writer.flush();
-                            loggedIn = true;
-                        } else {
-                            writer.write("Login failed");
-                            writer.println();
-                            writer.flush();
-                        }
-                    }
-                } else if (option.equals("Create account")) {
-                    boolean created = false;
-                    while (!created) {
+                if (reader.ready()) {
+                    String option = reader.readLine();
+                    System.out.println(option);
+                    if (option.equals("Login")) {
                         database.loadDatabase(DATABASE_OBJECT);
-                        String username = reader.readLine();
-                        String password = reader.readLine();
-                        String profilePicture = reader.readLine();
-                        User createUser = new User(username, password, profilePicture,
-                                "NA", "NA", new ArrayList<>());
-                        boolean successful = database.addUser(createUser);
-                        if (successful) {
-                            writer.write(createUser.getUsername());
-                            writer.println();
-                            writer.flush();
-                            System.out.println("Created new account" + Database.users);
-                            created = true;
-                        } else {
-                            writer.write("User already exists");
-                            writer.println();
-                            writer.flush();
+                        boolean loggedIn = false;
+                        while (!loggedIn) {
+                            String username = reader.readLine();
+                            String password = reader.readLine();
+                            User thisUser = login(username, password);
+                            if (thisUser != null) {
+                                writer.write(thisUser.getUsername());
+                                writer.println();
+                                writer.flush();
+                                loggedIn = true;
+                            } else {
+                                writer.write("Login failed");
+                                writer.println();
+                                writer.flush();
+                            }
                         }
-                    }
+                    } else if (option.equals("Create account")) {
+                        boolean created = false;
+                        while (!created) {
+                            database.loadDatabase(DATABASE_OBJECT);
+                            String username = reader.readLine();
+                            String password = reader.readLine();
+                            String profilePicture = reader.readLine();
+                            User createUser = new User(username, password, profilePicture,
+                                    "NA", "NA", new ArrayList<>());
+                            boolean successful = database.addUser(createUser);
+                            if (successful) {
+                                writer.write(createUser.getUsername());
+                                writer.println();
+                                writer.flush();
+                                System.out.println("Created new account" + Database.users);
+                                created = true;
+                            } else {
+                                writer.write("User already exists");
+                                writer.println();
+                                writer.flush();
+                            }
+                        }
 
-                } else if (option.equals("Search")) {
-                    boolean searched = false;
-                    while (!searched) {
+                    } else if (option.equals("Search")) {
+                        boolean searched = false;
+                        while (!searched) {
+                            database.loadDatabase(DATABASE_OBJECT);
+                            String search = reader.readLine();
+                            System.out.println("Received search for: " + search);
+
+                            ArrayList<String> results = searchDatabase(search); // somehow have to get inputted parameters -> thru GUI ?
+                            String response = String.join(";", results);
+                            // this sends results to client
+                            if (response.isEmpty()) {
+                                System.out.println("Search failed");
+                                writer.write("Search failed");
+                                writer.println();
+                                writer.flush();
+                            } else {
+                                System.out.println("Successfully sent to client: " + response);
+                                writer.write(response);
+                                writer.println();
+                                writer.flush();
+                            }
+
+                            String searchAgain = reader.readLine();
+                            if (searchAgain.equals(String.valueOf(JOptionPane.NO_OPTION))) {
+                                searched = true;
+                            }
+                        }
+                    } else if (option.equals("Add friend")) {
                         database.loadDatabase(DATABASE_OBJECT);
-                        String search = reader.readLine();
-                        System.out.println("Received search for: " + search);
+                        String userAddingString = reader.readLine();
+                        System.out.println("The string username is " + userAddingString);
+                        // finds user object who is ADDING (sending request) using string search
+                        User userAdding = database.findUser(userAddingString);
 
-                        ArrayList<String> results = searchDatabase(search); // somehow have to get inputted parameters -> thru GUI ?
-                        String response = String.join(";", results);
-                        // this sends results to client
-                        if (response.isEmpty()) {
-                            System.out.println("Search failed");
-                            writer.write("Search failed");
+                        User friend = database.findUser(reader.readLine());
+                        if (friend != null) {
+                            writer.write("");
+                            writer.println();
+                            writer.flush();
+                            System.out.println("The string of the friend is " + friend.getUsername());
+                            // actually adding friend
+                            writer.write(userAdding.addFriend(friend));
+                            writer.println();
+                            writer.flush();
+                            Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
+                            database.saveDatabase(DATABASE_OBJECT);
+                        } else {
+                            writer.write("null");
+                            writer.println();
+                            writer.flush();
+                        }
+                    } else if (option.equals("Block user")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+
+                        User blocked = database.findUser(reader.readLine());
+                        if (blocked != null) {
+                            writer.write("");
+                            writer.println();
+                            writer.flush();
+                            writer.write(user.blockUser(blocked));
+                            writer.println();
+                            writer.flush();
+                            database.saveDatabase(DATABASE_OBJECT);
+                        } else {
+                            writer.write("null");
+                            writer.println();
+                            writer.flush();
+                        }
+                    } else if (option.equals("Message")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+                        User receiver = database.findUser(reader.readLine());
+                        if (receiver == null) {
+                            writer.write("null");
                             writer.println();
                             writer.flush();
                         } else {
-                            System.out.println("Successfully sent to client: " + response);
-                            writer.write(response);
+                            writer.write("");
+                            writer.println();
+                            writer.flush();
+                            writer.write(user.sendMessage(receiver, reader.readLine()));
+                            writer.println();
+                            writer.flush();
+                        }
+                        database.saveDatabase(DATABASE_OBJECT);
+                    } else if (option.equals("Remove friend")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        String userRemovingString = reader.readLine();
+                        System.out.println("The string username is " + userRemovingString);
+                        // finds user object who is REMOVING using string search
+                        User userRemoving = database.findUser(userRemovingString);
+                        User friendToRemove = database.findUser(reader.readLine());
+                        if (friendToRemove != null) {
+                            writer.write("");
+                            writer.println();
+                            writer.flush();
+                            System.out.println("The string of the friend to remove is " + friendToRemove.getUsername());
+                            // actually adding friend
+                            writer.write(userRemoving.removeFriend(friendToRemove));
+                            writer.println();
+                            writer.flush();
+                            Database.users.set(Database.users.indexOf(database.findUser(userRemovingString)), userRemoving);
+                            database.saveDatabase(DATABASE_OBJECT);
+                            //database.saveInformation(DATABASE_TEXT);
+                        } else {
+                            writer.write("null");
                             writer.println();
                             writer.flush();
                         }
 
-                        String searchAgain = reader.readLine();
-                        if (searchAgain.equals(String.valueOf(JOptionPane.NO_OPTION))) {
-                            searched = true;
-                        }
-                    }
-                } else if (option.equals("Add friend")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    String userAddingString = reader.readLine();
-                    System.out.println("The string username is " + userAddingString);
-                    // finds user object who is ADDING (sending request) using string search
-                    User userAdding = database.findUser(userAddingString);
-
-                    User friend = database.findUser(reader.readLine());
-                    if (friend != null) {
-                        writer.write("");
-                        writer.println();
-                        writer.flush();
-                        System.out.println("The string of the friend is " + friend.getUsername());
-                        // actually adding friend
-                        writer.write(userAdding.addFriend(friend));
-                        writer.println();
-                        writer.flush();
-                        Database.users.set(Database.users.indexOf(database.findUser(userAddingString)), userAdding);
-                        database.saveDatabase(DATABASE_OBJECT);
-                    } else {
-                        writer.write("null");
-                        writer.println();
-                        writer.flush();
-                    }
-                } else if (option.equals("Block user")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-
-                    User blocked = database.findUser(reader.readLine());
-                    if (blocked != null) {
-                        writer.write("");
-                        writer.println();
-                        writer.flush();
-                        writer.write(user.blockUser(blocked));
-                        writer.println();
-                        writer.flush();
-                        database.saveDatabase(DATABASE_OBJECT);
-                    } else {
-                        writer.write("null");
-                        writer.println();
-                        writer.flush();
-                    }
-                }
-                else if (option.equals("Message")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-                    User receiver = database.findUser(reader.readLine());
-                    if (receiver == null) {
-                        writer.write("null");
-                        writer.println();
-                        writer.flush();
-                    } else {
-                        writer.write("");
-                        writer.println();
-                        writer.flush();
-                        writer.write(user.sendMessage(receiver, reader.readLine()));
-                        writer.println();
-                        writer.flush();
-                    }
-                    database.saveDatabase(DATABASE_OBJECT);
-                } else if (option.equals("Remove friend")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    String userRemovingString = reader.readLine();
-                    System.out.println("The string username is " + userRemovingString);
-                    // finds user object who is REMOVING using string search
-                    User userRemoving = database.findUser(userRemovingString);
-                    User friendToRemove = database.findUser(reader.readLine());
-                    if (friendToRemove != null) {
-                        writer.write("");
-                        writer.println();
-                        writer.flush();
-                        System.out.println("The string of the friend to remove is " + friendToRemove.getUsername());
-                        // actually adding friend
-                        writer.write(userRemoving.removeFriend(friendToRemove));
-                        writer.println();
-                        writer.flush();
-                        Database.users.set(Database.users.indexOf(database.findUser(userRemovingString)), userRemoving);
-                        database.saveDatabase(DATABASE_OBJECT);
-                        //database.saveInformation(DATABASE_TEXT);
-                    } else {
-                        writer.write("null");
-                        writer.println();
-                        writer.flush();
-                    }
-
-                    System.out.println(Database.users);
-                } else if (option.equals("View Incoming Messages")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-                    System.out.println(user);
-                    ArrayList<String> messages = loadMessages(user, "incoming");
-                    for (String message : messages) {
-                        writer.write(message);
-                        writer.println();
-                        writer.flush();
-                    }
-                    writer.write("END");
-                    writer.println();
-                    writer.flush();
-                } else if (option.equals("View Sent Messages")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-                    System.out.println(user);
-                    ArrayList<String> messages = loadMessages(user, "outgoing");
-                    for (String message : messages) {
-                        writer.write(message);
-                        writer.println();
-                        writer.flush();
-                    }
-                    writer.write("END");
-                    writer.println();
-                    writer.flush();
-                } else if (option.equals("Delete Messages")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-                    System.out.println(user);
-                    ArrayList<String> messages = loadMessages(user, "delete");
-                    if (messages.getFirst().equals(user.getUsername() + " has no outgoing messages to delete.")) {
-                        writer.write("false");
-                        writer.println();
-                        writer.flush();
+                        System.out.println(Database.users);
+                    } else if (option.equals("View Incoming Messages")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+                        System.out.println(user);
+                        ArrayList<String> messages = loadMessages(user, "incoming");
                         for (String message : messages) {
                             writer.write(message);
                             writer.println();
@@ -330,10 +300,11 @@ public class Server implements Runnable {
                         writer.write("END");
                         writer.println();
                         writer.flush();
-                    } else {
-                        writer.write("true");
-                        writer.println();
-                        writer.flush();
+                    } else if (option.equals("View Sent Messages")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+                        System.out.println(user);
+                        ArrayList<String> messages = loadMessages(user, "outgoing");
                         for (String message : messages) {
                             writer.write(message);
                             writer.println();
@@ -342,87 +313,117 @@ public class Server implements Runnable {
                         writer.write("END");
                         writer.println();
                         writer.flush();
-
-                        try {
-                            int number = Integer.parseInt(reader.readLine());
-                            System.out.println(number);
-                            deleteMessage(findMessage(user, number));
-                            writer.write("true");
-                            writer.println();
-                            writer.flush();
-                        } catch (NumberFormatException e) {
+                    } else if (option.equals("Delete Messages")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+                        System.out.println(user);
+                        ArrayList<String> messages = loadMessages(user, "delete");
+                        if (messages.getFirst().equals(user.getUsername() + " has no outgoing messages to delete.")) {
                             writer.write("false");
                             writer.println();
                             writer.flush();
-                        }
-                    }
-                } else if (option.equals("Unblock user")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-
-                    User unblocked = database.findUser(reader.readLine());
-                    if (unblocked != null) {
-                        writer.write("");
-                        writer.println();
-                        writer.flush();
-                        writer.write(user.unblockUser(unblocked));
-                        writer.println();
-                        writer.flush();
-                        database.saveDatabase(DATABASE_OBJECT);
-                    } else {
-                        writer.write("null");
-                        writer.println();
-                        writer.flush();
-                    }
-                } else if (option.equals("View Incoming Friend Messages")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User user = database.findUser(reader.readLine());
-                    System.out.println(user);
-                    ArrayList<String> messages = loadMessages(user, "friend incoming");
-                    for (String message : messages) {
-                        writer.write(message);
-                        writer.println();
-                        writer.flush();
-                    }
-                    writer.write("END");
-                    writer.println();
-                    writer.flush();
-                } else if (option.equals("View Profile")) {
-                    database.loadDatabase(DATABASE_OBJECT);
-                    User searcher = database.findUser(reader.readLine());
-                    User profile = database.findUser(reader.readLine());
-                    if (profile == null) {
-                        writer.write("null");
-                        writer.println();
-                        writer.flush();
-                    } else {
-                        writer.write("");
-                        writer.println();
-                        writer.flush();
-                        if (searcher.friendsWith(profile)) {
-                            writer.write(profile.getProfilePicture());
-                            writer.println();
-                            writer.flush();
-                            writer.write(profile.getUsername() + ": You are friends with this user");
-                            System.out.println(profile.getUsername() + ": You are friends with this user");
-                            writer.println();
-                            writer.flush();
-                        } else if (searcher.blocked(profile)) {
-                            writer.write(profile.getProfilePicture());
-                            writer.println();
-                            writer.flush();
-                            writer.write(profile.getUsername() + ": You are blocked with this user");
-                            System.out.println(profile.getUsername() + ": You are blocked with this user");
+                            for (String message : messages) {
+                                writer.write(message);
+                                writer.println();
+                                writer.flush();
+                            }
+                            writer.write("END");
                             writer.println();
                             writer.flush();
                         } else {
-                            writer.write(profile.getProfilePicture());
+                            writer.write("true");
                             writer.println();
                             writer.flush();
-                            writer.write(profile.getUsername());
-                            System.out.println(profile.getUsername());
+                            for (String message : messages) {
+                                writer.write(message);
+                                writer.println();
+                                writer.flush();
+                            }
+                            writer.write("END");
                             writer.println();
                             writer.flush();
+
+                            try {
+                                int number = Integer.parseInt(reader.readLine());
+                                System.out.println(number);
+                                deleteMessage(findMessage(user, number));
+                                writer.write("true");
+                                writer.println();
+                                writer.flush();
+                            } catch (NumberFormatException e) {
+                                writer.write("false");
+                                writer.println();
+                                writer.flush();
+                            }
+                        }
+                    } else if (option.equals("Unblock user")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+
+                        User unblocked = database.findUser(reader.readLine());
+                        if (unblocked != null) {
+                            writer.write("");
+                            writer.println();
+                            writer.flush();
+                            writer.write(user.unblockUser(unblocked));
+                            writer.println();
+                            writer.flush();
+                            database.saveDatabase(DATABASE_OBJECT);
+                        } else {
+                            writer.write("null");
+                            writer.println();
+                            writer.flush();
+                        }
+                    } else if (option.equals("View Incoming Friend Messages")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User user = database.findUser(reader.readLine());
+                        System.out.println(user);
+                        ArrayList<String> messages = loadMessages(user, "friend incoming");
+                        for (String message : messages) {
+                            writer.write(message);
+                            writer.println();
+                            writer.flush();
+                        }
+                        writer.write("END");
+                        writer.println();
+                        writer.flush();
+                    } else if (option.equals("View Profile")) {
+                        database.loadDatabase(DATABASE_OBJECT);
+                        User searcher = database.findUser(reader.readLine());
+                        User profile = database.findUser(reader.readLine());
+                        if (profile == null) {
+                            writer.write("null");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("");
+                            writer.println();
+                            writer.flush();
+                            if (searcher.friendsWith(profile)) {
+                                writer.write(profile.getProfilePicture());
+                                writer.println();
+                                writer.flush();
+                                writer.write(profile.getUsername() + ": You are friends with this user");
+                                System.out.println(profile.getUsername() + ": You are friends with this user");
+                                writer.println();
+                                writer.flush();
+                            } else if (searcher.blocked(profile)) {
+                                writer.write(profile.getProfilePicture());
+                                writer.println();
+                                writer.flush();
+                                writer.write(profile.getUsername() + ": You are blocked with this user");
+                                System.out.println(profile.getUsername() + ": You are blocked with this user");
+                                writer.println();
+                                writer.flush();
+                            } else {
+                                writer.write(profile.getProfilePicture());
+                                writer.println();
+                                writer.flush();
+                                writer.write(profile.getUsername());
+                                System.out.println(profile.getUsername());
+                                writer.println();
+                                writer.flush();
+                            }
                         }
                     }
                 }

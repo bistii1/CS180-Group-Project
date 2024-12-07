@@ -60,25 +60,34 @@ public class Client extends JFrame implements ActionListener {
 
     private void showHomeScreen() {
         // Create a panel for the home screen
-        JPanel homePanel = new JPanel(new GridLayout(3, 1,0,30));
-        JPanel emptyPanel = new JPanel();
-        emptyPanel.setBackground(new Color(140, 211, 255));
-        emptyPanel.setPreferredSize(new Dimension(0, 500));
-        homePanel.add(emptyPanel);
+        JPanel homePanel = new JPanel();
+        homePanel.setLayout(new BoxLayout(homePanel, BoxLayout.Y_AXIS));
+
         homePanel.setBackground(new Color(140, 211, 255));
 
         // Add welcome message
-        JLabel welcomeLabel = new JLabel("Welcome to friend!", SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("Welcome to BizChat!", SwingConstants.CENTER);
+        JLabel descriptionLabel = new JLabel("A place where businesses can chat, casually!");
         welcomeLabel.setFont(new Font("Calibri", Font.BOLD, 39));
+        descriptionLabel.setFont(new Font("Calibri", Font.BOLD, 15));
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+
         homePanel.add(welcomeLabel);
+        homePanel.add(descriptionLabel);
 
 
         // Add a proceed button
         JButton proceedButton = new JButton("Proceed to Login");
         proceedButton.setFont(new Font("Calibri", Font.PLAIN, 16));
         proceedButton.addActionListener(e -> {
-            getContentPane().remove(homePanel);
+            getContentPane().removeAll();
+            this.setVisible(false);
             loginOrCreateAccount();
         });
 
@@ -173,6 +182,7 @@ public class Client extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
+                showHomeScreen();
             }
         });
         dialog.add(buttonPanel, BorderLayout.SOUTH);
