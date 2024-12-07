@@ -67,7 +67,7 @@ public class Client extends JFrame implements ActionListener {
         homePanel.setBackground(new Color(140, 211, 255));
 
         // Add welcome message
-        JLabel welcomeLabel = new JLabel("Welcome to friendDMer!", SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("Welcome to friend!", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Calibri", Font.BOLD, 39));
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         homePanel.add(welcomeLabel);
@@ -83,7 +83,7 @@ public class Client extends JFrame implements ActionListener {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(proceedButton);
-        buttonPanel.setBackground(new Color(10, 78, 122));
+        buttonPanel.setBackground(new Color(140, 211, 255));
         homePanel.add(buttonPanel);
 
         // Display the home screen
@@ -105,13 +105,15 @@ public class Client extends JFrame implements ActionListener {
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // login Panel
-        JPanel loginPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel loginPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         loginPanel.add(new JLabel("Username:"));
         JTextField loginUsernameField = new JTextField();
         loginPanel.add(loginUsernameField);
+
         loginPanel.add(new JLabel("Password:"));
         JPasswordField loginPasswordField = new JPasswordField();
         loginPanel.add(loginPasswordField);
+
 
         JButton loginButton = new JButton("Login");
         loginPanel.add(loginButton);
@@ -126,16 +128,22 @@ public class Client extends JFrame implements ActionListener {
         tabbedPane.add("Login", loginPanel);
 
         // Create Account Panel
-        JPanel createAccountPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel createAccountPanel = new JPanel(new GridLayout(6, 2, 10, 10));
         createAccountPanel.add(new JLabel("New Username:"));
         JTextField createUsernameField = new JTextField();
         createAccountPanel.add(createUsernameField);
+
         createAccountPanel.add(new JLabel("New Password:"));
         JPasswordField createPasswordField = new JPasswordField();
         createAccountPanel.add(createPasswordField);
+
         createAccountPanel.add(new JLabel("Confirm Password:"));
         JPasswordField confirmPasswordField = new JPasswordField();
         createAccountPanel.add(confirmPasswordField);
+
+        createAccountPanel.add(new JLabel("Set Profile Picture:"));
+        JTextField newProfilePictureField = new JTextField();
+        createAccountPanel.add(newProfilePictureField);
 
         JButton createAccountButton = new JButton("Create Account");
         createAccountPanel.add(createAccountButton);
@@ -143,7 +151,11 @@ public class Client extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleAccountCreation(createUsernameField.getText(),createPasswordField.getText());
-                displayMainMenu();
+                try {
+                    displayMainMenu();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 dialog.dispose();
             }
         });
@@ -200,7 +212,8 @@ public class Client extends JFrame implements ActionListener {
 
             while (!created) {
 
-                String profilePicture = JOptionPane.showInputDialog(this, "Enter a profile picture path:", "Create Account", JOptionPane.QUESTION_MESSAGE);
+                String profilePicture = JOptionPane.showInputDialog(this,
+                        "Enter a profile picture path:", "Create Account", JOptionPane.QUESTION_MESSAGE);
                 if (profilePicture.isEmpty()) {
                     profilePicture = "default.jpg";
                 }
@@ -234,28 +247,25 @@ public class Client extends JFrame implements ActionListener {
         }
     }*/
 
-    private void displayMainMenu() {
+    private void displayMainMenu() throws IOException {
         // Main container and tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Messages Feed Tab
         JPanel messageFeedPanel = new JPanel(new BorderLayout());
         JTextArea messageFeedArea = new JTextArea();
-        messageFeedArea.setEditable(false); // Make it read-only
 
-//        // Populate the message feed
-//        List<String> messages = getMessagesForLoggedInUser();
-//        for (String message : messages) {
-//            messageFeedArea.append(message + "\n");
-//        }
+        viewIncomingMessagesFeed(messageFeedArea);
 
         JScrollPane scrollPane = new JScrollPane(messageFeedArea); // Scrollable feed
         messageFeedPanel.add(scrollPane, BorderLayout.CENTER);
         tabbedPane.addTab("Message Feed", messageFeedPanel);
 
+
         // Menu Tab
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS)); // Vertical stacking
+
 
 
 
@@ -504,6 +514,15 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
+    private void viewIncomingMessagesFeed(JTextArea messageFeedArea) throws IOException {
+        writer.println("View Incoming Messages");
+        writer.println(thisUserName);
+
+        String message = "";
+        while (!((message = reader.readLine()).equals("END"))) {
+            messageFeedArea.append(message + "\n");
+        }
+    }
     private void viewSentMessages() throws IOException {
         writer.println("View Sent Messages");
         writer.println(thisUserName);
