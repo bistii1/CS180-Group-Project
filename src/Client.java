@@ -78,7 +78,8 @@ public class Client extends JFrame implements ActionListener {
         JButton proceedButton = new JButton("Proceed to Login");
         proceedButton.setFont(new Font("Calibri", Font.PLAIN, 16));
         proceedButton.addActionListener(e -> {
-            getContentPane().remove(homePanel);
+            getContentPane().removeAll();
+            this.setVisible(false);
             loginOrCreateAccount();
         });
 
@@ -173,6 +174,7 @@ public class Client extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
+                showHomeScreen();
             }
         });
         dialog.add(buttonPanel, BorderLayout.SOUTH);
