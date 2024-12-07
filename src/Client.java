@@ -26,6 +26,7 @@ public class Client extends JFrame implements ActionListener {
     private JButton unblockButton;
     private JButton viewFriendMessagesButton;
     private JButton viewProfileButton;
+    private JButton refreshButton;
 
     public Client() {
         // Connect to server
@@ -186,19 +187,18 @@ public class Client extends JFrame implements ActionListener {
         try {
           writer.println("Login");
             boolean loggedIn = false;
+            writer.println(username);
+            writer.println(password);
 
-            while (!loggedIn) {
-                writer.println(username);
-                writer.println(password);
+            thisUserName = reader.readLine();
+            if ("Login failed".equals(thisUserName)) {
+                JOptionPane.showMessageDialog(this, "Incorrect username or password", "Error", JOptionPane.ERROR_MESSAGE);
+                loginOrCreateAccount();
 
-                thisUserName = reader.readLine();
-                if ("Login failed".equals(thisUserName)) {
-                    JOptionPane.showMessageDialog(this, "Incorrect username or password", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Welcome, " + thisUserName, "Logged In", JOptionPane.INFORMATION_MESSAGE);
-                    loggedIn = true;
-                    displayMainMenu();
-                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Welcome, " + thisUserName, "Logged In", JOptionPane.INFORMATION_MESSAGE);
+                loggedIn = true;
+                displayMainMenu();
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error during login", "Error", JOptionPane.ERROR_MESSAGE);
@@ -253,28 +253,26 @@ public class Client extends JFrame implements ActionListener {
 
         // Messages Feed Tab
         JPanel messageFeedPanel = new JPanel(new BorderLayout());
-        JTextArea messageFeedArea = new JTextArea();
 
-        viewIncomingMessagesFeed(messageFeedArea);
+        refreshButton = new JButton("Refresh");
+        refreshButton.addActionListener(this);
+        messageFeedPanel.add(refreshButton, BorderLayout.SOUTH);
 
-        JScrollPane scrollPane = new JScrollPane(messageFeedArea); // Scrollable feed
+
+        JTextArea messageFeedArea = viewIncomingMessagesFeed();
+
+        JScrollPane scrollPane = new JScrollPane(); // Scrollable feed
+        scrollPane.setViewportView(messageFeedArea);
         messageFeedPanel.add(scrollPane, BorderLayout.CENTER);
         tabbedPane.addTab("Message Feed", messageFeedPanel);
 
 
         // Menu Tab
+        JScrollPane newScrollPane = new JScrollPane();
         JPanel menuPanel = new JPanel();
+
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS)); // Vertical stacking
 
-
-
-
-        // Add some padding around the menu panel
-        JPanel paddedMenuPanel = new JPanel(new BorderLayout());
-        paddedMenuPanel.add(menuPanel, BorderLayout.CENTER);
-        paddedMenuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding
-
-        tabbedPane.addTab("Menu", paddedMenuPanel);
 
         searchUsersButton = new JButton("Search All Users");
         addFriendButton = new JButton("Add Friend");
@@ -299,7 +297,21 @@ public class Client extends JFrame implements ActionListener {
         unblockButton.addActionListener(this);
         viewFriendMessagesButton.addActionListener(this);
         viewProfileButton.addActionListener(this);
-
+        
+        searchUsersButton.setActionCommand("Search All Users");
+        addFriendButton.setActionCommand("Add Friend");
+        sendMessageButton.setActionCommand("Send Message");
+        blockButton.setActionCommand("Block User");
+        removeFriendButton.setActionCommand("Remove Friend");
+        viewAllIncomingMessagesButton.setActionCommand("View All Incoming Messages");
+        viewSentMessagesButton.setActionCommand("View Sent Messages");
+        deleteMessagesButton.setActionCommand("Delete Messages");
+        unblockButton.setActionCommand("Unblock User");
+        viewFriendMessagesButton.setActionCommand("View Friend Messages");
+        viewProfileButton.setActionCommand("View Profile");
+        refreshButton.setActionCommand("Refresh");
+        
+        
         menuPanel.add(searchUsersButton);
         menuPanel.add(addFriendButton);
         menuPanel.add(sendMessageButton);
@@ -311,6 +323,15 @@ public class Client extends JFrame implements ActionListener {
         menuPanel.add(unblockButton);
         menuPanel.add(viewFriendMessagesButton);
         menuPanel.add(viewProfileButton);
+
+        // Add some padding around the menu panel
+        JPanel paddedMenuPanel = new JPanel(new BorderLayout());
+        paddedMenuPanel.add(menuPanel, BorderLayout.CENTER);
+        paddedMenuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding
+
+        newScrollPane.setViewportView(paddedMenuPanel);
+
+        tabbedPane.addTab("Menu", newScrollPane);
 
         // Add the tabbed pane to the frame
         Container content = this.getContentPane();
@@ -326,48 +347,56 @@ public class Client extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == searchUsersButton) {
+        String action = e.getActionCommand();
+        if (action.equals("Search All Users")) {
             searchUsers();
-        } else if (e.getSource() == addFriendButton) {
+        } else if (action.equals("Add Friend")) {
             addFriend();
-        } else if (e.getSource() == sendMessageButton) {
+        } else if (action.equals("Send Message")) {
             try {
                 sendMessage();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-        } else if (e.getSource() == blockButton) {
+        } else if (action.equals("Block User")) {
             blockUser();
-        } else if (e.getSource() == removeFriendButton) {
+        } else if (action.equals("Remove Friend")) {
             removeFriend();
-        } else if (e.getSource() == viewAllIncomingMessagesButton) {
+        } else if (action.equals("View All Incoming Messages")) {
             try {
                 viewIncomingMessages();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-        } else if (e.getSource() == viewSentMessagesButton) {
+        } else if (action.equals("View Sent Messages")) {
             try {
                 viewSentMessages();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-        } else if (e.getSource() == deleteMessagesButton) {
+        } else if (action.equals("Delete Messages")) {
             try {
                 deleteMessages();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-        } else if (e.getSource() == unblockButton) {
+        } else if (action.equals("Unblock User")) {
             unblockUser();
-        } else if (e.getSource() == viewFriendMessagesButton) {
+        } else if (action.equals("View Friend Messages")) {
             try {
                 viewIncomingFriendMessages();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-        } else if (e.getSource() == viewProfileButton) {
+        } else if (action.equals("View Profile")) {
             viewProfile();
+        } else if (action.equals("Refresh")) {
+            try {
+                this.getContentPane().removeAll();
+                displayMainMenu();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -514,14 +543,18 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
-    private void viewIncomingMessagesFeed(JTextArea messageFeedArea) throws IOException {
+    private JTextArea viewIncomingMessagesFeed() throws IOException {
         writer.println("View Incoming Messages");
         writer.println(thisUserName);
 
+        JTextArea messageFeedArea = new JTextArea();
+
         String message = "";
         while (!((message = reader.readLine()).equals("END"))) {
+            System.out.println("MESSAGE: " + message);
             messageFeedArea.append(message + "\n");
         }
+        return messageFeedArea;
     }
     private void viewSentMessages() throws IOException {
         writer.println("View Sent Messages");
