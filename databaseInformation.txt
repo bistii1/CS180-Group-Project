@@ -1,3 +1,0 @@
-h,h,h,bisti,NA,[heyy,h,hey, heyy,h,jey]
-heyy,e,e,NA,h,[heyy,h,hey, heyy,h,jey]
-bisti,b,b,h,NA,[]
