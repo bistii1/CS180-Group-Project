@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-public class Message implements Serializable {
+public class Message implements Serializable, MessageInterface {
 
     private User sender;
     private User recipient;

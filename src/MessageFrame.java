@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-public class MessageFrame extends JFrame {
+public class MessageFrame extends JFrame implements MessageFrameInterface {
 
     private JTextArea textArea;
 

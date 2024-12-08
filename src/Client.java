@@ -307,7 +307,7 @@ public class Client extends JFrame implements ActionListener {
         unblockButton.addActionListener(this);
         viewFriendMessagesButton.addActionListener(this);
         viewProfileButton.addActionListener(this);
-        
+
         searchUsersButton.setActionCommand("Search All Users");
         addFriendButton.setActionCommand("Add Friend");
         sendMessageButton.setActionCommand("Send Message");
@@ -320,8 +320,8 @@ public class Client extends JFrame implements ActionListener {
         viewFriendMessagesButton.setActionCommand("View Friend Messages");
         viewProfileButton.setActionCommand("View Profile");
         refreshButton.setActionCommand("Refresh");
-        
-        
+
+
         menuPanel.add(searchUsersButton);
         menuPanel.add(addFriendButton);
         menuPanel.add(sendMessageButton);
