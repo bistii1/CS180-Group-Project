@@ -38,15 +38,6 @@ public class User implements UserInterface, Serializable {
         this.messageHistory = messageHistory;
     }
 
-    /*public User(String username, String password, String profilePicture) {
-        this.username = username;
-        this.password = password;
-        this.profilePicture = profilePicture;
-        this.friends = new ArrayList<>();
-        this.blockedUsers = new ArrayList<>();
-        this.messageHistory = new ArrayList<>();
-        //users.add(this);
-    }*/
 
     // Profile Management
     public void updateProfile(String newUsername, String newPassword, String newProfilePicture) {
@@ -270,22 +261,6 @@ public class User implements UserInterface, Serializable {
         }
     }
 
-    // Profile Picture Methods
-
-//     Method to load profile picture into a JLabel. Would be used in Phase 3 with more edits
-//
-//    public JLabel loadProfilePicture() {
-//        JLabel label = new JLabel();
-//        if (profilePicture != null) {
-//            ImageIcon icon = new ImageIcon(profilePicture);
-//            Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-//            label.setIcon(new ImageIcon(scaledImage));
-//        } else {
-//            label.setText("Profile Picture Unavailable");
-//        }
-//        return label;
-//    }
-//  }
 
 //    public String getFriendUsernames() {
 //        String result = "";
