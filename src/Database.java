@@ -16,10 +16,16 @@ import java.util.*;
 public class Database extends ArrayList<String> implements DatabaseInterface, Serializable {
 
     public static ArrayList<User> users; // arraylist of all users created ever
+
+
     private static final long serialVersionUID = 1L; // for serializable
+
+
     private final String FILENAME = "database.txt";
+
+
     private final String INFORMATION_FILE = "databaseInformation.txt";
-//    private static final String PROFILEPICTURE_FOLDER = "profilePictures/";
+
 
     public Database() {
         users = new ArrayList<>(); // initializes new database object
@@ -60,26 +66,6 @@ public class Database extends ArrayList<String> implements DatabaseInterface, Se
         }
     }
 
-    public boolean changeUsername(String username, String newUsername) {
-        for (User user : getUsers()) {
-            if (user.getUsername().equals(newUsername)) {
-                return false;
-            }
-        }
-        findUser(username).setUsername(newUsername);
-        return true;
-    }
-
-
-    public boolean updatePassword(String username, String password) {
-        User user = findUser(username);
-        if (user != null) {
-            user.setPassword(password);
-            //user.setAttachment(updatedUser.getAttachment());
-            return true;
-        }
-        return false;
-    }
 
 
     // adds new user
