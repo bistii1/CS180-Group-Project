@@ -38,13 +38,6 @@ public class UserTest {
         user5.getMessageHistory().add(new Message(user5, user2, "Ice cream"));
     }
 
-    @Test
-    public void testUpdateProfile() {
-        user1.updateProfile("newUser1", "newPassword1", "newProfilePicture1");
-        assertEquals("Incorrect Username Found", "newUser1", user1.getUsername());
-        assertEquals("Incorrect Password Found", "newPassword1", user1.getPassword());
-        assertEquals("Incorrect Profile Picture Found", "newProfilePicture1", user1.getProfilePicture());
-    }
 
     @Test
     public void testAddFriend() {
@@ -69,7 +62,7 @@ public class UserTest {
         assertEquals("This user has been blocked.", blockResult);
         assertTrue(user2.getBlockedUsers().contains("user4"));
 
-        // Attempt to add a blocked user as a friend should fail
+        // attempt to add a blocked user as a friend should fail
         String addFriendResult = user2.addFriend(user4);
         assertTrue(addFriendResult.contains("blocked"));
     }

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public interface UserInterface {
 
-    void updateProfile(String newUsername, String newPassword, String newProfilePicture);
 
     // Friend Management
     String addFriend(User user);

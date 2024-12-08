@@ -49,12 +49,6 @@ public class User implements UserInterface, Serializable {
         //users.add(this);
     }*/
 
-    // Profile Management
-    public void updateProfile(String newUsername, String newPassword, String newProfilePicture) {
-        setUsername(newUsername);
-        setPassword(newPassword);
-        setProfilePicture(newProfilePicture);
-    }
 
     // Getters and Setters
     public String getUsername() {
@@ -62,8 +56,6 @@ public class User implements UserInterface, Serializable {
     }
 
     public void setUsername(String newUsername) {
-        // Check if any other user has the same username
-        // Only if no user has this username, set it
         this.username = newUsername;
     }
 
@@ -104,6 +96,7 @@ public class User implements UserInterface, Serializable {
     public ArrayList<Message> getMessageHistory() {
         return messageHistory;
     }
+
 
     // Friend Methods
     public String addFriend(User user) {
@@ -232,7 +225,7 @@ public class User implements UserInterface, Serializable {
             } else {
                 blockedUsers = String.join(";", tempBlocked);
             }
-            return "This user has been blocked";
+            return "This user has been unblocked";
         } else {
             return "This user was never blocked.";
         }

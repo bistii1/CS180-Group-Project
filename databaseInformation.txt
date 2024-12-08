@@ -1,2 +1,3 @@
-user1,password1,profilePicture1,user2; user4,user5,[]
-user2,password2,profilePicture2,user3,user5,[]
+h,h,h,bisti,NA,[heyy,h,hey, heyy,h,jey]
+heyy,e,e,NA,h,[heyy,h,hey, heyy,h,jey]
+bisti,b,b,h,NA,[]

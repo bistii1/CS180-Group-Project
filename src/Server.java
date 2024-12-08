@@ -161,6 +161,7 @@ public class Server implements Runnable {
                             String profilePicture = reader.readLine();
                             User createUser = new User(username, password, profilePicture,
                                     "NA", "NA", new ArrayList<>());
+                            System.out.println(createUser.getUsername());
                             boolean successful = database.addUser(createUser);
                             if (successful) {
                                 writer.write(createUser.getUsername());

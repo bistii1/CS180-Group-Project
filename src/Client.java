@@ -160,13 +160,13 @@ public class Client extends JFrame implements ActionListener {
         createAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleAccountCreation(createUsernameField.getText(),createPasswordField.getText());
+                dialog.dispose();
+                handleAccountCreation(createUsernameField.getText(),createPasswordField.getText(), newProfilePictureField.getText());
                 try {
                     displayMainMenu();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                dialog.dispose();
             }
         });
         tabbedPane.add("Create Account", createAccountPanel);
@@ -215,32 +215,23 @@ public class Client extends JFrame implements ActionListener {
         }
     }
 
-    private void handleAccountCreation(String username, String password) {
+    private void handleAccountCreation(String username, String password, String profilePicture) {
         try {
             writer.println("Create account");
             boolean created = false;
+            writer.println(username);
+            writer.println(password);
+            writer.println(profilePicture);
 
-            while (!created) {
-
-                String profilePicture = JOptionPane.showInputDialog(this,
-                        "Enter a profile picture path:", "Create Account", JOptionPane.QUESTION_MESSAGE);
-                if (profilePicture.isEmpty()) {
-                    profilePicture = "default.jpg";
-                }
-
-                writer.println(username);
-                writer.println(password);
-                writer.println(profilePicture);
-
-                thisUserName = reader.readLine();
-                if ("User already exists".equals(thisUserName)) {
-                    JOptionPane.showMessageDialog(this, "User already exists!", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    //saveToDatabase(username, password, profilePicture);
-                    JOptionPane.showMessageDialog(this, "Welcome, " + thisUserName, "Account Created", JOptionPane.INFORMATION_MESSAGE);
-                    created = true;
-                    displayMainMenu();
-                }
+            thisUserName = reader.readLine();
+            if ("User already exists".equals(thisUserName)) {
+                JOptionPane.showMessageDialog(this, "User already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+                loginOrCreateAccount();
+            } else {
+                //saveToDatabase(username, password, profilePicture);
+                JOptionPane.showMessageDialog(this, "Welcome, " + thisUserName, "Account Created", JOptionPane.INFORMATION_MESSAGE);
+                created = true;
+                displayMainMenu();
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error during account creation", "Error", JOptionPane.ERROR_MESSAGE);
@@ -474,14 +465,16 @@ public class Client extends JFrame implements ActionListener {
         }
 
         if (condition.equals("null")) {
-            JOptionPane.showMessageDialog(this, "No user found", "Block User", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No user found", "Block User",
+                    JOptionPane.INFORMATION_MESSAGE);
         } else {
             try {
                 condition = reader.readLine();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            JOptionPane.showMessageDialog(this, condition, "Block User", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, condition, "Block User",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
