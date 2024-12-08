@@ -1,6 +1,5 @@
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -28,15 +27,15 @@ public class User implements UserInterface, Serializable {
     private ArrayList<Message> messageHistory;
 
     // Constructor
-    public User(String username, String password, String profilePicture, String friends,
-                String blockedUsers, ArrayList<Message> messageHistory) {
+    public User(String username, String password, String profilePicture,
+                String friends, String blockedUsers,
+                ArrayList<Message> messageHistory) {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
         this.friends = friends;
         this.blockedUsers = blockedUsers;
         this.messageHistory = messageHistory;
-        //users.add(this);
     }
 
     /*public User(String username, String password, String profilePicture) {
